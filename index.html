@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="de" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="VisionOne — Ultra-Premium Streaming Plattform für Professionals.">
+  <meta name="theme-color" content="#020617">
+  <title>VisionOne — Ultra Premium Streaming</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <style>
+    body{
+      font-family:'Plus Jakarta Sans',system-ui;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(56,189,248,.15), transparent 40%),
+        radial-gradient(800px 400px at 90% 10%, rgba(99,102,241,.18), transparent 40%),
+        linear-gradient(180deg,#020617,#020617 60%,#000);
+      color:#e5e7eb;
+    }
+
+    .glass{
+      background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+      backdrop-filter:blur(30px) saturate(160%);
+      border:1px solid rgba(255,255,255,.12);
+    }
+
+    .neon{
+      box-shadow:0 0 0 1px rgba(99,102,241,.35),0 40px 120px -20px rgba(99,102,241,.45);
+    }
+
+    .hero-title{
+      font-size:clamp(3.5rem,8vw,7rem);
+      line-height:.9;
+      letter-spacing:-.04em;
+      font-weight:900;
+    }
+
+    .price-card{
+      position:relative;
+      overflow:hidden;
+    }
+
+    .price-card::after{
+      content:"";
+      position:absolute;
+      inset:auto -40% -60% -40%;
+      height:200%;
+      background:radial-gradient(circle at center,rgba(99,102,241,.18),transparent 60%);
+      opacity:0;
+      transition:.6s ease;
+    }
+
+    .price-card:hover::after{opacity:1}
+  </style>
+</head>
+<body>
+
+<header class="fixed inset-x-0 top-0 z-50">
+  <nav class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center glass rounded-b-3xl">
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 rounded-2xl bg-indigo-500/90 flex items-center justify-center neon">
+        <span class="font-black text-xl">V</span>
+      </div>
+      <span class="text-xl font-black tracking-tight">Vision<span class="text-indigo-400">One</span></span>
+    </div>
+    <div class="hidden md:flex gap-10 text-xs uppercase tracking-[0.35em] text-slate-400">
+      <a href="#pricing" class="hover:text-white">Preise</a>
+      <a href="#install" class="hover:text-white">Installation</a>
+      <a href="https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ" target="_blank" class="hover:text-indigo-400">Community</a>
+    </div>
+    <a href="https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ" target="_blank" class="px-6 py-3 rounded-xl bg-indigo-500 text-black font-black text-xs tracking-widest neon">JOIN</a>
+  </nav>
+</header>
+
+<section class="min-h-screen flex items-center justify-center text-center px-6 pt-32">
+  <div data-aos="zoom-out" class="max-w-5xl">
+    <h1 class="hero-title text-white mb-8">Streaming<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-400 to-fuchsia-500">Without Limits</span></h1>
+    <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-12">VisionOne ist kein IPTV. Es ist eine Infrastruktur auf Enterprise-Niveau.</p>
+    <div class="flex justify-center gap-6">
+      <a href="#pricing" class="px-10 py-4 rounded-2xl bg-white text-black font-black uppercase tracking-widest">Tarife</a>
+      <a href="https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ" target="_blank" class="px-10 py-4 rounded-2xl glass uppercase tracking-widest font-black">Zugang anfragen</a>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="py-32 max-w-7xl mx-auto px-6">
+  <h2 class="text-center text-5xl font-black mb-24">Pricing<span class="text-indigo-400">.</span></h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+
+    <!-- 1 Monat -->
+    <div class="price-card glass rounded-[36px] p-8" data-aos="fade-up">
+      <h3 class="uppercase tracking-widest text-xs text-slate-400">1 Monat</h3>
+      <div class="text-4xl font-black my-5">40 €</div>
+      <p class="text-slate-400 mb-8">Flexibilität & Test</p>
+      <a href="#" class="block text-center py-3 rounded-xl bg-slate-900 font-black">Starten</a>
+    </div>
+
+    <!-- 6 Monate -->
+    <div class="price-card glass rounded-[36px] p-8" data-aos="fade-up" data-aos-delay="100">
+      <div class="text-[10px] font-black tracking-widest text-emerald-400 mb-2">PREIS-LEISTUNG</div>
+      <h3 class="uppercase tracking-widest text-xs text-slate-300">6 Monate</h3>
+      <div class="text-4xl font-black my-5">80 €</div>
+      <p class="text-slate-400 mb-8">Preis-Leistungs-Sieger</p>
+      <a href="#" class="block text-center py-3 rounded-xl bg-slate-900 font-black">Wählen</a>
+    </div>
+
+    <!-- 12 Monate / Best Deal -->
+    <div class="price-card glass rounded-[40px] p-10 neon scale-105" data-aos="zoom-in">
+      <div class="absolute top-6 right-6 text-[10px] font-black tracking-widest text-indigo-400">BEST DEAL</div>
+      <h3 class="uppercase tracking-widest text-xs text-indigo-300">12 Monate</h3>
+      <div class="text-5xl font-black my-6">120 €</div>
+      <p class="text-indigo-200 mb-2">Bester Deal</p>
+      <p class="text-xs tracking-widest text-indigo-300 mb-8">≈ 10 € / Monat</p>
+      <a href="#" class="block text-center py-4 rounded-xl bg-indigo-500 text-black font-black">Jetzt sichern</a>
+    </div>
+
+    <!-- Diamond -->
+    <div class="price-card glass rounded-[36px] p-8" data-aos="fade-up" data-aos-delay="200">
+      <h3 class="uppercase tracking-widest text-xs text-cyan-400">Diamond</h3>
+      <div class="text-4xl font-black my-5">200 €</div>
+      <p class="text-slate-400 mb-8">High-End 4K & Sport</p>
+      <a href="#" class="block text-center py-3 rounded-xl bg-cyan-500 text-black font-black">Upgrade</a>
+    </div>
+
+    <!-- World Black VIP -->
+    <div class="price-card glass rounded-[36px] p-8" data-aos="fade-up" data-aos-delay="300">
+      <h3 class="uppercase tracking-widest text-xs text-amber-400">World Black VIP</h3>
+      <div class="text-4xl font-black my-5 text-amber-400">300 €</div>
+      <p class="text-slate-400 mb-8">Full Service & Multi-Device</p>
+      <a href="#" class="block text-center py-3 rounded-xl bg-amber-500 text-black font-black">VIP Access</a>
+    </div>
+
+  </div>
+</section>
+
+<section id="install" class="py-32 border-t border-white/5">
+  <div class="max-w-5xl mx-auto px-6 text-center">
+    <h2 class="text-4xl font-black mb-16">Setup<span class="text-indigo-400">.</span></h2>
+    <div class="grid md:grid-cols-3 gap-12 text-left">
+      <div class="glass p-8 rounded-3xl">
+        <div class="text-5xl font-black text-white/10">01</div>
+        <h3 class="font-black mb-3">App installieren</h3>
+        <p class="text-slate-400">IBO oder VuPlayer laden.</p>
+      </div>
+      <div class="glass p-8 rounded-3xl">
+        <div class="text-5xl font-black text-white/10">02</div>
+        <h3 class="font-black mb-3">Device Key</h3>
+        <p class="text-slate-400">MAC & Device-ID senden.</p>
+      </div>
+      <div class="glass p-8 rounded-3xl">
+        <div class="text-5xl font-black text-white/10">03</div>
+        <h3 class="font-black mb-3">Freischaltung</h3>
+        <p class="text-slate-400">Starten & genießen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="py-16 text-center text-slate-500 text-xs">
+  © 2025 VisionOne · Ultra Premium Streaming Infrastructure
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init({duration:1200,once:false});</script>
+
+</body>
+</html>
