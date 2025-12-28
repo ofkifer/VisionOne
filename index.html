@@ -3,249 +3,337 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
-  <meta name="description" content="VisionOne — Ultra-Premium Streaming Plattform für Professionals.">
-  <meta name="theme-color" content="#020617">
-  <title>VisionOne — Ultra Premium Streaming</title>
+  <meta name="description" content="VisionOne — High-End Streaming für IBO & VU Player Pro.">
+  <title>VisionOne — Professional Streaming Platform</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700;800;900&display=swap" rel="stylesheet">
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    body {
-      font-family: 'Plus Jakarta Sans', system-ui;
-      background: radial-gradient(1200px 600px at 10% -10%, rgba(99,102,241,0.15), transparent 40%), #020617;
-      color: #e5e7eb;
-      overflow-x: hidden;
+    body { 
+        font-family: 'Plus Jakarta Sans', sans-serif; 
+        background: radial-gradient(1200px 600px at 10% -10%, rgba(99,102,241,0.15), transparent 40%), #020617; 
+        color: #e5e7eb; 
+        overflow-x: hidden; 
     }
-    .glass {
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(25px) saturate(180%);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
+    .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255,255,255,0.08); }
     .hero-title { font-size: clamp(2.5rem, 8vw, 6.5rem); line-height: 0.95; font-weight: 900; letter-spacing: -0.05em; }
+    .gradient-text { background: linear-gradient(90deg, #6366f1, #2dd4bf, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     
-    /* Mobile Scroll Snap */
+    /* Sidebar Animation */
+    #sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(100%); }
+    #sidebar.active { transform: translateX(0); }
+
+    /* Pricing Scroll Mobile */
     @media (max-width: 768px) {
-      .pricing-container {
-        display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 1rem; padding: 20px;
-        scrollbar-width: none;
-      }
+      .pricing-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 1rem; padding: 20px; scrollbar-width: none; }
       .price-card { min-width: 85%; scroll-snap-align: center; }
     }
     
-    .status-pulse { animation: pulse 2s infinite; }
-    @keyframes pulse {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-    }
-    .gradient-text { background: linear-gradient(90deg, #818cf8, #2dd4bf, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    /* FAQ & Setup transitions */
+    .faq-answer { transition: max-height 0.3s ease-out; overflow: hidden; max-height: 0; }
+    .faq-answer.open { max-height: 200px; padding-bottom: 1.5rem; }
   </style>
 </head>
 <body class="antialiased">
 
-<div class="bg-indigo-600 text-white text-[10px] py-2 text-center font-black tracking-[0.2em] uppercase z-[60] relative">
-    <i class="fas fa-bolt mr-2"></i> Aktueller Status: <span id="visitorCount">284</span> User online & Streaming stabil
+<div id="sidebar" class="fixed inset-y-0 right-0 w-80 z-[200] glass border-l border-white/10 p-8 flex flex-col shadow-2xl">
+    <button onclick="toggleSidebar()" class="self-end text-2xl p-2 hover:text-indigo-400 transition">✕</button>
+    <div class="mt-8 flex flex-col gap-6 font-black text-xl uppercase tracking-tighter">
+        <a href="#entertainment" onclick="toggleSidebar()" class="hover:translate-x-2 transition-transform">Entertainment</a>
+        <a href="#pricing" onclick="toggleSidebar()" class="hover:translate-x-2 transition-transform">Preise</a>
+        <a href="#install" onclick="toggleSidebar()" class="hover:translate-x-2 transition-transform">Setup-Anleitung</a>
+        <a href="#contact" onclick="toggleSidebar()" class="hover:translate-x-2 transition-transform text-indigo-400">Support</a>
+    </div>
+    <div class="mt-auto space-y-4 pt-8 border-t border-white/5">
+        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Rechtliches</p>
+        <a href="#" class="block text-xs text-slate-400 hover:text-white">AGBs & Nutzungsbedingungen</a>
+        <a href="#" class="block text-xs text-slate-400 hover:text-white">Datenschutz & Cookies</a>
+        <a href="#" class="block text-xs text-slate-400 hover:text-white">Impressum</a>
+    </div>
 </div>
 
-<header class="fixed inset-x-0 top-10 z-50 p-4">
-  <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center glass rounded-[2.5rem]">
+<header class="fixed inset-x-0 top-6 z-50 px-4 md:px-8">
+  <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center glass rounded-[2rem]">
     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-2xl bg-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-        <span class="font-black text-xl text-black">V</span>
-      </div>
-      <span class="text-xl font-black tracking-tighter">Vision<span class="text-indigo-400">One</span></span>
+      <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-black text-white italic shadow-lg shadow-indigo-500/20">V1</div>
+      <span class="text-xl font-black tracking-tighter uppercase">Vision<span class="text-indigo-400">One</span></span>
     </div>
     <div class="hidden lg:flex gap-10 text-[10px] uppercase font-black tracking-widest text-slate-400">
+      <a href="#entertainment" class="hover:text-white transition">Entertainment</a>
       <a href="#pricing" class="hover:text-white transition">Tarife</a>
       <a href="#install" class="hover:text-white transition">Setup</a>
-      <a href="#faq" class="hover:text-white transition">FAQ</a>
     </div>
-    <a href="#pricing" class="bg-white text-black px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-500 hover:text-white transition">Starten</a>
+    <div class="flex items-center gap-4">
+        <button onclick="toggleSidebar()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 transition">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
   </nav>
 </header>
 
 <section class="min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20">
-  <div data-aos="zoom-out" data-aos-duration="1200">
-    <div class="inline-flex items-center gap-2 px-4 py-1.5 mb-8 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-indigo-400 text-[10px] font-black tracking-widest uppercase">
-        <div class="w-2 h-2 rounded-full bg-indigo-500 status-pulse"></div> 2025 Global Infrastructure
+    <div data-aos="fade-up" data-aos-duration="1000">
+        <div class="inline-flex items-center gap-3 px-5 py-2 mb-8 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em]">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+            </span>
+            IBO & VU Player Pro Activated
+        </div>
+        <h1 class="hero-title text-white mb-8">THE FUTURE OF<br><span class="gradient-text tracking-tighter italic">STREAMING.</span></h1>
+        <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">Keine Ruckler. Kein Stress. Nur reinstes 4K-Entertainment auf deinem IBO oder VU Player.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="#pricing" class="px-10 py-5 bg-indigo-600 text-white font-black rounded-2xl uppercase text-xs tracking-widest hover:bg-indigo-500 transition shadow-xl shadow-indigo-600/20">Abo wählen</a>
+            <a href="#entertainment" class="px-10 py-5 glass border border-white/10 text-white font-black rounded-2xl uppercase text-xs tracking-widest hover:bg-white/5 transition">Was ist drin?</a>
+        </div>
     </div>
-    <h1 class="hero-title text-white mb-8 leading-none">THE NEXT ERA OF<br><span class="gradient-text tracking-tighter">ENTERTAINMENT.</span></h1>
-    <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-12 font-medium leading-relaxed">Kein Satellit. Kein Kabel. VisionOne liefert 4K-RAW Signale weltweit über das schnellste CDN-Netzwerk der Branche.</p>
-    <div class="flex flex-col sm:flex-row justify-center gap-6">
-      <a href="#pricing" class="px-12 py-5 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-widest text-xs hover:bg-indigo-500 transition shadow-2xl shadow-indigo-600/20">Abo wählen</a>
-      <a href="#install" class="px-12 py-5 rounded-2xl glass border border-white/10 text-white font-black uppercase tracking-widest text-xs hover:bg-white/5 transition">Anleitung</a>
+</section>
+
+<section id="entertainment" class="py-32 bg-slate-950/40 border-y border-white/5">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-20" data-aos="fade-up">
+            <h2 class="text-4xl font-black mb-4">DAS ENTERTAINMENT <span class="text-indigo-500 text-indigo-400">PAKET</span></h2>
+            <p class="text-slate-500 text-xs font-black uppercase tracking-[0.3em]">In jedem Tarif vollumfänglich enthalten</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="glass p-10 rounded-[2.5rem] border-t-2 border-indigo-500/30" data-aos="fade-up">
+                <i class="fas fa-futbol text-4xl mb-6 text-indigo-500"></i>
+                <h4 class="font-black text-xl mb-3 uppercase italic">Live Sport</h4>
+                <p class="text-sm text-slate-400 leading-relaxed">Alle Ligen weltweit. Champions League, Bundesliga, Formel 1 & UFC in 60FPS.</p>
+            </div>
+            <div class="glass p-10 rounded-[2.5rem] border-t-2 border-emerald-500/30" data-aos="fade-up" data-aos-delay="100">
+                <i class="fas fa-film text-4xl mb-6 text-emerald-500"></i>
+                <h4 class="font-black text-xl mb-3 uppercase italic">Cinema 4K</h4>
+                <p class="text-sm text-slate-400 leading-relaxed">Die neusten Kinofilme direkt nach Release. Deutsche & Englische Tonspuren.</p>
+            </div>
+            <div class="glass p-10 rounded-[2.5rem] border-t-2 border-fuchsia-500/30" data-aos="fade-up" data-aos-delay="200">
+                <i class="fas fa-play-circle text-4xl mb-6 text-fuchsia-500"></i>
+                <h4 class="font-black text-xl mb-3 uppercase italic">Series VOD</h4>
+                <p class="text-sm text-slate-400 leading-relaxed">Alle Staffeln von Netflix, HBO, Disney+ & Prime Video auf einer Plattform.</p>
+            </div>
+            <div class="glass p-10 rounded-[2.5rem] border-t-2 border-cyan-500/30" data-aos="fade-up" data-aos-delay="300">
+                <i class="fas fa-globe-americas text-4xl mb-6 text-cyan-500"></i>
+                <h4 class="font-black text-xl mb-3 uppercase italic">International</h4>
+                <p class="text-sm text-slate-400 leading-relaxed">Tausende Live-Kanäle aus TR, DE, US, UK, IT, PL, AR, ES und vielen mehr.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="pricing" class="py-32 max-w-7xl mx-auto px-6">
+  <div class="text-center mb-20" data-aos="fade-up">
+    <h2 class="text-5xl font-black mb-4 uppercase tracking-tighter leading-tight">WÄHLE DEINEN <span class="text-indigo-400">ZUGANG</span></h2>
+    <p class="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em]">Keine versteckten Gebühren · Sofort-Aktivierung</p>
+  </div>
+
+  <div class="pricing-container md:grid md:grid-cols-3 lg:grid-cols-5 md:gap-4 lg:gap-6">
+    <div class="price-card glass rounded-[3rem] p-8 flex flex-col border-white/5" data-aos="fade-up">
+        <h3 class="text-[10px] font-black text-slate-500 mb-6 uppercase">Trial</h3>
+        <div class="text-4xl font-black mb-8">40 € <span class="text-xs font-normal text-slate-500">/ 1M</span></div>
+        <ul class="text-[11px] font-bold text-slate-400 space-y-4 mb-10 uppercase flex-grow">
+            <li><i class="fas fa-check text-indigo-500 mr-2"></i> 1 Verbindung</li>
+            <li><i class="fas fa-check text-indigo-500 mr-2"></i> Alle Kanäle & VOD</li>
+        </ul>
+        <button onclick="openModal('1 Monat – 40€')" class="w-full py-4 rounded-2xl bg-white/5 border border-white/10 font-black text-[10px] uppercase tracking-widest hover:bg-white hover:text-black transition">Wählen</button>
+    </div>
+
+    <div class="price-card glass rounded-[3rem] p-8 flex flex-col border-white/5" data-aos="fade-up" data-aos-delay="100">
+        <h3 class="text-[10px] font-black text-slate-500 mb-6 uppercase">Standard</h3>
+        <div class="text-4xl font-black mb-8">80 € <span class="text-xs font-normal text-slate-500">/ 6M</span></div>
+        <ul class="text-[11px] font-bold text-slate-400 space-y-4 mb-10 uppercase flex-grow">
+            <li><i class="fas fa-check text-indigo-500 mr-2"></i> Stabiler Server</li>
+            <li><i class="fas fa-check text-indigo-500 mr-2"></i> Voller Support</li>
+        </ul>
+        <button onclick="openModal('6 Monate – 80€')" class="w-full py-4 rounded-2xl bg-white/5 border border-white/10 font-black text-[10px] uppercase tracking-widest hover:bg-white hover:text-black transition">Wählen</button>
+    </div>
+
+    <div class="price-card bg-indigo-600 rounded-[3.5rem] p-10 flex flex-col transform md:scale-110 shadow-2xl relative z-20" data-aos="zoom-in">
+        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-white text-indigo-600 text-[9px] font-black px-4 py-1.5 rounded-full uppercase">Best Choice</div>
+        <h3 class="text-[10px] font-black text-indigo-100 mb-6 uppercase tracking-widest">Premium Year</h3>
+        <div class="text-5xl font-black mb-8">120 € <span class="text-xs font-normal text-indigo-200">/ 12M</span></div>
+        <ul class="text-white text-[11px] font-bold space-y-4 mb-10 uppercase flex-grow tracking-tight">
+            <li><i class="fas fa-star mr-2"></i> VIP Cloud Priority</li>
+            <li><i class="fas fa-star mr-2"></i> Alle PPV Events Frei</li>
+            <li><i class="fas fa-star mr-2"></i> Anti-Freeze Pro</li>
+        </ul>
+        <button onclick="openModal('12 Monate – 120€')" class="w-full py-5 rounded-2xl bg-white text-black font-black text-[10px] uppercase tracking-widest shadow-xl transform active:scale-95 transition">Jetzt Sichern</button>
+    </div>
+
+    <div class="price-card glass rounded-[3rem] p-8 flex flex-col border-cyan-500/20" data-aos="fade-up" data-aos-delay="200">
+        <h3 class="text-[10px] font-black text-cyan-400 mb-6 uppercase">Diamond</h3>
+        <div class="text-4xl font-black mb-8 text-cyan-400">200 €</div>
+        <button onclick="openModal('Diamond – 200€')" class="w-full py-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-black text-[10px] uppercase tracking-widest">Wählen</button>
+    </div>
+
+    <div class="price-card glass rounded-[3rem] p-8 flex flex-col border-amber-500/20" data-aos="fade-up" data-aos-delay="300">
+        <h3 class="text-[10px] font-black text-amber-500 mb-6 uppercase">World Black</h3>
+        <div class="text-4xl font-black mb-8 text-amber-500">300 €</div>
+        <button onclick="openModal('World Black – 300€')" class="w-full py-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-500 font-black text-[10px] uppercase tracking-widest">Wählen</button>
     </div>
   </div>
 </section>
 
-<section id="pricing" class="py-24 max-w-7xl mx-auto overflow-hidden">
-  <div class="text-center mb-20 px-6" data-aos="fade-up">
-    <h2 class="text-5xl font-black mb-4 uppercase tracking-tighter leading-none">Wähle deinen <span class="text-indigo-500">Plan</span></h2>
-    <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Sofort-Freischaltung für alle Geräte</p>
-  </div>
-
-  <div class="pricing-container md:grid md:grid-cols-3 lg:grid-cols-5 md:gap-4 md:px-6">
-    <div class="price-card glass rounded-[35px] p-8 flex flex-col border-white/5" data-aos="fade-up">
-      <h3 class="uppercase tracking-widest text-[10px] font-black text-slate-500 mb-6">Test Phase</h3>
-      <div class="text-4xl font-black mb-8 text-white">40 € <span class="text-xs font-normal text-slate-500">/ 1M</span></div>
-      <ul class="text-slate-400 text-xs space-y-4 mb-10 flex-grow">
-        <li class="flex items-center gap-2"><i class="fas fa-check text-indigo-500"></i> Alle 4K Kanäle</li>
-        <li class="flex items-center gap-2"><i class="fas fa-check text-indigo-500"></i> Full VOD Access</li>
-        <li class="flex items-center gap-2"><i class="fas fa-check text-indigo-500"></i> 1 Verbindung</li>
-      </ul>
-      <button onclick="openModal('Basis – 40€')" class="w-full py-4 rounded-2xl bg-white/5 border border-white/10 font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition">Wählen</button>
+<section id="install" class="py-32 bg-slate-950/40 border-y border-white/5 px-6">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+        <div class="lg:col-span-5" data-aos="fade-right">
+            <h2 class="text-4xl font-black mb-8 leading-tight uppercase">APP SETUP & <br><span class="text-indigo-400 text-indigo-400">AKTIVIERUNG</span></h2>
+            <div class="space-y-4">
+                <button onclick="switchSetupTab('ibo')" class="setup-btn w-full p-6 glass rounded-2xl border-l-4 border-indigo-500 bg-white/5 flex items-center gap-6 transition text-left">
+                    <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center font-black text-indigo-400">IBO</div>
+                    <div><h4 class="font-black text-sm uppercase">IBO PLAYER</h4><p class="text-[10px] text-slate-500">Für Samsung & LG Smart TVs</p></div>
+                </button>
+                <button onclick="switchSetupTab('vu')" class="setup-btn w-full p-6 glass rounded-2xl border-l-4 border-transparent hover:bg-white/5 flex items-center gap-6 transition text-left">
+                    <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center font-black text-emerald-400">VU</div>
+                    <div><h4 class="font-black text-sm uppercase">VU PLAYER PRO</h4><p class="text-[10px] text-slate-500">Für Firestick & Android TV</p></div>
+                </button>
+            </div>
+        </div>
+        <div class="lg:col-span-7 glass rounded-[3rem] p-10 md:p-16 min-h-[400px]" data-aos="fade-left">
+            <div id="setup-ibo" class="setup-content space-y-6">
+                <h3 class="text-2xl font-black text-indigo-400">IBO Player Aktivierung</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">Der IBO Player ist die stabilste Lösung für Smart TVs. Suche die App im offiziellen App Store deines Fernsehers.</p>
+                <ol class="space-y-4 text-sm font-bold text-slate-300">
+                    <li class="flex gap-4"><span class="text-indigo-500">01.</span> App installieren und öffnen</li>
+                    <li class="flex gap-4"><span class="text-indigo-500">02.</span> Notiere die <span class="text-white underline italic">Device ID / MAC Address</span></li>
+                    <li class="flex gap-4"><span class="text-indigo-500">03.</span> Sende uns diese ID über den Support</li>
+                    <li class="flex gap-4"><span class="text-indigo-500">04.</span> VisionOne Kanäle werden remote aufgeschaltet</li>
+                </ol>
+            </div>
+            <div id="setup-vu" class="setup-content hidden space-y-6">
+                <h3 class="text-2xl font-black text-emerald-400">VU Player Pro Setup</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">Optimiert für Amazon Firestick und Android Boxen (Nvidia Shield etc.).</p>
+                <ol class="space-y-4 text-sm font-bold text-slate-300">
+                    <li class="flex gap-4"><span class="text-emerald-500">01.</span> Downloader App öffnen</li>
+                    <li class="flex gap-4"><span class="text-emerald-500">02.</span> VU Player APK Link eingeben</li>
+                    <li class="flex gap-4"><span class="text-emerald-500">03.</span> Nach der Installation <span class="text-white">Device Key</span> kopieren</li>
+                    <li class="flex gap-4"><span class="text-emerald-500">04.</span> Übermittlung an uns für High-End Aktivierung</li>
+                </ol>
+            </div>
+        </div>
     </div>
-
-    <div class="price-card glass rounded-[35px] p-8 flex flex-col border-white/5" data-aos="fade-up" data-aos-delay="100">
-      <h3 class="uppercase tracking-widest text-[10px] font-black text-slate-300 mb-6">Semi-Annual</h3>
-      <div class="text-4xl font-black mb-8 text-white">80 € <span class="text-xs font-normal text-slate-500">/ 6M</span></div>
-      <p class="text-slate-400 text-xs mb-10 flex-grow leading-relaxed">Ideal für User, die Stabilität und Performance testen wollen.</p>
-      <button onclick="openModal('6 Monate – 80€')" class="w-full py-4 rounded-2xl bg-white/5 border border-white/10 font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition">Wählen</button>
-    </div>
-
-    <div class="price-card bg-indigo-600 rounded-[40px] p-10 flex flex-col transform md:scale-110 shadow-2xl shadow-indigo-600/40 relative z-20" data-aos="zoom-in">
-      <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-white text-indigo-600 text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">Best Choice</div>
-      <h3 class="uppercase tracking-widest text-[10px] font-black text-indigo-100 mb-6">Full Year Access</h3>
-      <div class="text-5xl font-black mb-8 text-white">120 € <span class="text-xs font-normal text-indigo-200">/ 12M</span></div>
-      <ul class="text-indigo-100 text-xs space-y-4 mb-10 flex-grow font-bold uppercase tracking-tighter">
-        <li><i class="fas fa-star mr-2"></i> 24/7 Premium Support</li>
-        <li><i class="fas fa-bolt mr-2"></i> Anti-Freeze 5.0</li>
-        <li><i class="fas fa-shield-alt mr-2"></i> Private CDN-Slot</li>
-      </ul>
-      <button onclick="openModal('12 Monate – 120€')" class="w-full py-5 rounded-2xl bg-white text-black font-black text-[10px] uppercase tracking-widest shadow-xl transform active:scale-95 transition">Jetzt Sichern</button>
-    </div>
-
-    <div class="price-card glass rounded-[35px] p-8 flex flex-col border-cyan-500/20" data-aos="fade-up" data-aos-delay="200">
-      <h3 class="uppercase tracking-widest text-[10px] font-black text-cyan-400 mb-6">Diamond Access</h3>
-      <div class="text-4xl font-black mb-8 text-cyan-400">200 €</div>
-      <p class="text-slate-500 text-xs mb-10 flex-grow leading-relaxed">Maximale Bandbreite für echte Heimkino Enthusiasten.</p>
-      <button onclick="openModal('Diamond – 200€')" class="w-full py-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-black text-[10px] uppercase tracking-widest">Wählen</button>
-    </div>
-
-    <div class="price-card glass rounded-[35px] p-8 flex flex-col border-amber-500/20" data-aos="fade-up" data-aos-delay="300">
-      <h3 class="uppercase tracking-widest text-[10px] font-black text-amber-500 mb-6">World Black VIP</h3>
-      <div class="text-4xl font-black mb-8 text-amber-500">300 €</div>
-      <p class="text-slate-500 text-xs mb-10 flex-grow leading-relaxed">Multi-Line Support für bis zu 3 Geräte gleichzeitig.</p>
-      <button onclick="openModal('World Black VIP – 300€')" class="w-full py-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-500 font-black text-[10px] uppercase tracking-widest">Wählen</button>
-    </div>
-  </div>
 </section>
 
-<section id="install" class="py-32 bg-slate-950/40 border-y border-white/5">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-      <div class="lg:col-span-5" data-aos="fade-right">
-        <h2 class="text-4xl font-black mb-8 leading-tight">GIGANTISCHES SETUP.<br><span class="text-indigo-400">KEIN AUFWAND.</span></h2>
+<section id="contact" class="py-32 max-w-5xl mx-auto px-6">
+    <div class="glass rounded-[3rem] p-10 md:p-16 text-center relative overflow-hidden" data-aos="zoom-in">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent"></div>
+        <h2 class="text-3xl md:text-4xl font-black mb-6 uppercase">PERSONAL <span class="text-indigo-500">SUPPORT</span></h2>
+        <p class="text-slate-400 max-w-lg mx-auto mb-10 text-sm">Unser Support-Team ist täglich für dich da, um die Einrichtung auf deinem IBO/VU Player abzuschließen oder Fragen zu klären.</p>
+        <div class="flex flex-wrap justify-center gap-8 mb-12">
+            <div class="text-center">
+                <p class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1">Response Time</p>
+                <p class="text-white font-black">&lt; 15 MIN</p>
+            </div>
+            <div class="text-center">
+                <p class="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1">Available</p>
+                <p class="text-white font-black text-emerald-500">24/7 LIVE</p>
+            </div>
+        </div>
+        <a href="https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ" class="inline-block px-12 py-5 bg-white text-black font-black rounded-2xl uppercase tracking-widest text-[10px] hover:bg-indigo-500 hover:text-white transition shadow-xl">Community beitreten</a>
+    </div>
+</section>
+
+<footer class="py-20 border-t border-white/5 px-6">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+        <div class="md:col-span-2">
+            <div class="flex items-center gap-3 mb-6 font-black text-xl italic uppercase tracking-tighter">VisionOne</div>
+            <p class="text-xs text-slate-500 leading-relaxed max-w-sm">VisionOne ist ein technischer Dienstleister für die Einrichtung und Aktivierung von Media-Player-Schnittstellen (IBO & VU Player Pro). Wir garantieren maximale Performance durch modernste CDN-Infrastruktur.</p>
+        </div>
         <div class="space-y-4">
-          <button onclick="switchTab('firestick')" class="tab-btn w-full p-6 glass rounded-2xl border-l-4 border-indigo-500 bg-white/5 flex items-center gap-6 transition text-left">
-            <i class="fas fa-fire text-2xl text-orange-500"></i>
-            <div><h4 class="font-black text-sm uppercase">Firestick / Android</h4><p class="text-[10px] text-slate-500">Installation via Downloader</p></div>
-          </button>
-          <button onclick="switchTab('smarttv')" class="tab-btn w-full p-6 glass rounded-2xl border-l-4 border-transparent hover:bg-white/5 flex items-center gap-6 transition text-left">
-            <i class="fas fa-tv text-2xl text-blue-400"></i>
-            <div><h4 class="font-black text-sm uppercase">Samsung / LG TV</h4><p class="text-[10px] text-slate-500">IBO / Bob Player Apps</p></div>
-          </button>
-          <button onclick="switchTab('mobile')" class="tab-btn w-full p-6 glass rounded-2xl border-l-4 border-transparent hover:bg-white/5 flex items-center gap-6 transition text-left">
-            <i class="fas fa-mobile-alt text-2xl text-emerald-400"></i>
-            <div><h4 class="font-black text-sm uppercase">Apple / iOS</h4><p class="text-[10px] text-slate-500">Smarters Player Lite</p></div>
-          </button>
+            <h5 class="text-[10px] font-black uppercase tracking-widest text-white">Rechtliches</h5>
+            <nav class="flex flex-col gap-2 text-xs text-slate-500 font-bold uppercase tracking-tighter">
+                <a href="#" class="hover:text-white transition">AGBs</a>
+                <a href="#" class="hover:text-white transition">Datenschutz</a>
+                <a href="#" class="hover:text-white transition">Cookies</a>
+            </nav>
         </div>
-      </div>
-      <div class="lg:col-span-7 glass rounded-[3rem] p-10 md:p-16 min-h-[450px]" data-aos="fade-left">
-        <div id="content-firestick" class="tab-content space-y-8">
-          <h3 class="text-3xl font-black">Firestick / Cube Setup</h3>
-          <ul class="space-y-6">
-            <li class="flex gap-4 items-start"><span class="w-6 h-6 rounded-full bg-indigo-500 text-black text-xs font-black flex items-center justify-center shrink-0 mt-1">1</span> <p class="text-slate-300">Downloader App im Store suchen & öffnen.</p></li>
-            <li class="flex gap-4 items-start"><span class="w-6 h-6 rounded-full bg-indigo-500 text-black text-xs font-black flex items-center justify-center shrink-0 mt-1">2</span> <p class="text-slate-300">Link für IBO Player eingeben und installieren.</p></li>
-            <li class="flex gap-4 items-start"><span class="w-6 h-6 rounded-full bg-indigo-500 text-black text-xs font-black flex items-center justify-center shrink-0 mt-1">3</span> <p class="text-slate-300 text-indigo-400 font-bold">Device ID / MAC an uns senden für die Aktivierung.</p></li>
-          </ul>
+        <div class="space-y-4">
+            <h5 class="text-[10px] font-black uppercase tracking-widest text-white">Zahlung</h5>
+            <div class="flex gap-4 text-2xl text-slate-600">
+                <i class="fab fa-bitcoin"></i>
+                <i class="fab fa-cc-visa"></i>
+                <i class="fas fa-credit-card"></i>
+            </div>
         </div>
-        <div id="content-smarttv" class="tab-content hidden space-y-8">
-            <h3 class="text-3xl font-black">Smart TV Setup</h3>
-            <p class="text-slate-400">Suche im Content Store (Samsung/LG) nach dem <strong class="text-white">IBO Player</strong> oder <strong class="text-white">Nanomid</strong>. Sobald die App installiert ist, sende uns deine Mac-Adresse. Wir laden die Liste Remote auf deinen TV.</p>
-        </div>
-        <div id="content-mobile" class="tab-content hidden space-y-8">
-            <h3 class="text-3xl font-black">iOS & Android Mobile</h3>
-            <p class="text-slate-400 text-lg leading-relaxed">Nutze die App "Smarters Player Lite" (App Store) oder "IPTV Smarters Pro" (Play Store). Wir senden dir User, Passwort und Host URL sofort nach Bestellung zu.</p>
-        </div>
-      </div>
     </div>
-  </div>
-</section>
-
-<section id="faq" class="py-32 max-w-4xl mx-auto px-6">
-  <h2 class="text-center text-4xl font-black mb-16 uppercase tracking-tighter tracking-widest leading-none">Questions<span class="text-indigo-400">.</span></h2>
-  <div class="space-y-4">
-    <div class="glass rounded-2xl overflow-hidden border border-white/5">
-      <button onclick="toggleFaq(this)" class="w-full p-6 text-left flex justify-between items-center font-bold text-slate-200">
-        Welche Internet-Geschwindigkeit brauche ich? <i class="fas fa-chevron-down text-indigo-500"></i>
-      </button>
-      <div class="hidden p-6 pt-0 text-slate-400 text-sm border-t border-white/5">Für 4K Signale empfehlen wir mindestens 50 Mbit/s für ein flüssiges Erlebnis.</div>
+    <div class="text-center pt-8 border-t border-white/5">
+        <p class="text-[9px] text-slate-600 uppercase font-black tracking-[0.5em]">© 2025 VisionOne · Official Activation Service</p>
     </div>
-    <div class="glass rounded-2xl overflow-hidden border border-white/5">
-        <button onclick="toggleFaq(this)" class="w-full p-6 text-left flex justify-between items-center font-bold text-slate-200">
-          Gibt es eine Testphase? <i class="fas fa-chevron-down text-indigo-500"></i>
-        </button>
-        <div class="hidden p-6 pt-0 text-slate-400 text-sm border-t border-white/5">Ja! Kontaktiere unseren Support für einen 24h Testzugang, um dich von der Qualität zu überzeugen.</div>
-      </div>
-  </div>
-</section>
-
-<footer class="py-20 text-center border-t border-white/5">
-  <p class="text-slate-600 text-[10px] uppercase font-black tracking-[0.4em]">© 2025 VisionOne · Professional Infrastructure</p>
 </footer>
 
-<div id="checkoutModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90 backdrop-blur-xl p-4">
+<div id="checkoutModal" class="fixed inset-0 z-[300] hidden items-center justify-center bg-black/95 backdrop-blur-xl p-4">
   <div class="glass rounded-[40px] p-8 md:p-12 max-w-lg w-full relative" data-aos="zoom-in">
-    <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-500">✕</button>
-    <h3 class="text-3xl font-black mb-2 uppercase tracking-tighter">Request Access</h3>
-    <div id="selectedPlanLabel" class="mb-8 p-3 bg-indigo-500/10 rounded-xl text-indigo-400 text-xs font-bold border border-indigo-500/20"></div>
+    <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-500 hover:text-white">✕</button>
+    <h3 class="text-3xl font-black mb-2 uppercase italic tracking-tighter">ZUGANG ANFORDERN</h3>
+    <div id="selectedPlanLabel" class="mb-8 p-3 bg-indigo-500/10 rounded-xl text-indigo-400 text-[10px] font-black border border-indigo-500/20 uppercase"></div>
     <form class="space-y-4">
-      <input type="text" id="userName" placeholder="Dein Name" required class="w-full p-5 bg-white/5 border border-white/10 rounded-2xl focus:border-indigo-500 outline-none transition">
-      <input type="text" id="userMsg" placeholder="Nachricht / Gerät" class="w-full p-5 bg-white/5 border border-white/10 rounded-2xl focus:border-indigo-500 outline-none transition">
-      <button type="button" onclick="handleFormSubmission()" class="w-full py-5 bg-indigo-500 text-black font-black rounded-2xl uppercase tracking-widest text-xs shadow-xl">Anfrage Absenden</button>
+      <input type="text" id="userName" placeholder="Dein Name" class="w-full p-5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-indigo-500 transition">
+      <select id="userApp" class="w-full p-5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-indigo-500 transition text-slate-400">
+          <option value="ibo">IBO Player</option>
+          <option value="vu">VU Player Pro</option>
+      </select>
+      <input type="text" id="userMsg" placeholder="MAC-Adresse (falls bekannt)" class="w-full p-5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-indigo-500 transition">
+      <button type="button" onclick="handleFormSubmission()" class="w-full py-5 bg-indigo-500 text-black font-black rounded-2xl uppercase tracking-widest text-xs shadow-xl">Anfrage an Support</button>
     </form>
   </div>
 </div>
 
+<div id="cookieNotice" class="fixed bottom-6 left-6 right-6 z-[250] glass p-6 rounded-3xl border border-white/10 hidden md:flex items-center justify-between gap-8 transform translate-y-20 opacity-0 transition-all duration-700">
+    <div class="flex items-center gap-4">
+        <i class="fas fa-cookie-bite text-2xl text-indigo-500"></i>
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-relaxed">Diese Seite nutzt Cookies für die Performance-Analyse und Setup-Optimierung.</p>
+    </div>
+    <button onclick="acceptCookies()" class="px-8 py-3 bg-white text-black text-[10px] font-black uppercase rounded-xl tracking-widest shrink-0">Akzeptieren</button>
+</div>
+
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-  AOS.init({ duration: 800, once: true });
+    AOS.init({ duration: 800, once: true });
 
-  // Visitor Simulation
-  setInterval(() => {
-    const count = document.getElementById('visitorCount');
-    let val = parseInt(count.innerText);
-    count.innerText = val + (Math.random() > 0.5 ? 1 : -1);
-  }, 4000);
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+    }
 
-  function openModal(plan) {
-    document.getElementById('selectedPlanLabel').innerText = "PAKET: " + plan;
-    document.getElementById('checkoutModal').classList.replace('hidden', 'flex');
-  }
-  function closeModal() { document.getElementById('checkoutModal').classList.replace('flex', 'hidden'); }
+    function switchSetupTab(tab) {
+        document.querySelectorAll('.setup-content').forEach(c => c.classList.add('hidden'));
+        document.querySelectorAll('.setup-btn').forEach(b => b.classList.replace('border-indigo-500', 'border-transparent'));
+        
+        document.getElementById('setup-' + tab).classList.remove('hidden');
+        event.currentTarget.classList.replace('border-transparent', 'border-indigo-500');
+    }
 
-  function switchTab(tab) {
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.replace('border-indigo-500', 'border-transparent'));
-    document.getElementById('content-' + tab).classList.remove('hidden');
-    event.currentTarget.classList.replace('border-transparent', 'border-indigo-500');
-  }
+    function openModal(plan) {
+        document.getElementById('selectedPlanLabel').innerText = "Auswahl: " + plan;
+        document.getElementById('checkoutModal').classList.replace('hidden', 'flex');
+    }
 
-  function toggleFaq(btn) {
-    btn.nextElementSibling.classList.toggle('hidden');
-    btn.querySelector('i').classList.toggle('rotate-180');
-  }
+    function closeModal() {
+        document.getElementById('checkoutModal').classList.replace('flex', 'hidden');
+    }
 
-  function handleFormSubmission() {
-    window.open("https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ", "_blank");
-    closeModal();
-  }
+    function handleFormSubmission() {
+        window.open("https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ", "_blank");
+        closeModal();
+    }
+
+    // Cookie & Init
+    window.onload = () => {
+        setTimeout(() => {
+            const notice = document.getElementById('cookieNotice');
+            notice.classList.remove('translate-y-20', 'opacity-0');
+        }, 2000);
+    }
+
+    function acceptCookies() {
+        const notice = document.getElementById('cookieNotice');
+        notice.classList.add('translate-y-20', 'opacity-0');
+        setTimeout(() => notice.classList.add('hidden'), 500);
+    }
 </script>
 
 </body>
