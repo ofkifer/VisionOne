@@ -1,571 +1,322 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" class="scroll-smooth">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
-    <title>VONE — Global Infrastructure Hub</title>
+    <title>VONE — Global Infrastructure Official</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <style>
-        :root { --p-indigo: #6366f1; --p-emerald: #10b981; --p-slate: #0f172a; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; color: #f8fafc; overflow-x: hidden; scroll-behavior: smooth; }
+        :root { --accent: #6366f1; --bg: #020617; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: #f8fafc; overflow-x: hidden; }
         
-        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.08); }
-        .glass-thick { background: rgba(10, 15, 30, 0.95); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.05); }
+        /* Design System */
+        .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.06); }
+        .neon-text { text-shadow: 0 0 30px rgba(99, 102, 241, 0.5); }
         
-        /* Status Animations */
-        .live-indicator { width: 10px; height: 10px; background: var(--p-emerald); border-radius: 50%; box-shadow: 0 0 15px var(--p-emerald); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.3); } 100% { opacity: 1; transform: scale(1); } }
+        /* Pricing Scroll Interface */
+        .pricing-scroll { display: flex; overflow-x: auto; gap: 2rem; padding: 3rem 1rem; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; }
+        .price-card { min-width: 85vw; scroll-snap-align: center; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); flex-shrink: 0; }
+        @media (min-width: 1024px) { 
+            .price-card { min-width: 320px; flex: 1; } 
+            .price-card:hover { transform: translateY(-20px); border-color: var(--accent); } 
+        }
 
-        /* Smooth Scroll & Pricing UX */
-        .pricing-grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 2rem; padding: 2rem 1rem; scrollbar-width: none; }
-        .pricing-grid::-webkit-scrollbar { display: none; }
-        .pricing-card { min-width: 85vw; scroll-snap-align: center; flex-shrink: 0; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        @media (min-width: 768px) { .pricing-card { min-width: 380px; } }
+        /* Status & Animations */
+        .status-pulse { width: 10px; height: 10px; background: #10b981; border-radius: 50%; box-shadow: 0 0 15px #10b981; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.4; } }
+        .shake { animation: shake 0.5s ease-in-out; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
         
-        .shake { animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
-
         #particles { position: fixed; inset: 0; pointer-events: none; z-index: -1; }
-        .hero-text { background: linear-gradient(180deg, #fff 0%, #64748b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        details summary::-webkit-details-marker { display: none; }
         
-        /* Custom UI Elements */
-        .btn-glow { box-shadow: 0 0 30px rgba(99, 102, 241, 0.4); transition: all 0.3s ease; }
-        .btn-glow:hover { transform: translateY(-3px); box-shadow: 0 0 50px rgba(99, 102, 241, 0.6); }
-
-        input:focus, select:focus { border-color: var(--p-indigo) !important; box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); outline: none; }
-        .mac-input { letter-spacing: 0.15em; font-family: monospace; }
+        input:focus { border-color: var(--accent) !important; box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
     </style>
 </head>
-<body class="antialiased selection:bg-indigo-500/30">
+<body class="antialiased">
 
 <canvas id="particles"></canvas>
 
-<div id="cookieBanner" class="fixed bottom-8 inset-x-6 md:left-auto md:right-8 md:w-[480px] z-[9999] glass p-10 rounded-[3rem] shadow-3xl translate-y-[200%] transition-transform duration-1000">
-    <div class="flex items-center gap-6 mb-8">
-        <div class="w-14 h-14 bg-indigo-600/20 rounded-2xl flex items-center justify-center border border-indigo-500/30">
-            <i class="fas fa-shield-halved text-indigo-400 text-2xl"></i>
-        </div>
-        <h4 class="text-xs font-black uppercase tracking-[0.3em] text-white">Sicherheits-Gate</h4>
-    </div>
-    <p class="text-[11px] text-slate-400 font-bold uppercase mb-10 leading-relaxed italic tracking-widest">
-        VisionOne nutzt verschlüsselte Session-Token zur Validierung Ihrer Hardware-Identität. Keine Drittanbieter-Tracker. <a href="#privacy" class="text-indigo-400 underline decoration-2 underline-offset-4">Legal Notice</a>.
-    </p>
-    <button onclick="acceptCookies()" class="w-full py-6 bg-indigo-600 text-white text-[11px] font-black uppercase rounded-2xl tracking-[0.2em] shadow-xl hover:bg-indigo-500 transition">Protokoll Bestätigen</button>
-</div>
-
-<nav class="fixed top-0 inset-x-0 z-[1000] p-6 lg:p-10" data-aos="fade-down">
-    <div class="max-w-7xl mx-auto glass rounded-[2.8rem] p-5 flex justify-between items-center border-white/5 shadow-2xl">
-        <div class="flex items-center gap-6 ml-4">
-            <div class="bg-indigo-600 w-14 h-14 rounded-2xl flex items-center justify-center font-black italic shadow-2xl text-xl rotate-[-3deg]">V1</div>
-            <div class="hidden sm:block">
-                <span class="text-sm font-black uppercase tracking-tighter block leading-none text-white">VisionOne</span>
-                <div class="flex items-center gap-3 mt-2">
-                    <div class="live-indicator"></div>
-                    <span id="dbStatus" class="text-[9px] font-black uppercase text-emerald-400 tracking-[0.2em]">DB Connected</span>
+<nav class="fixed top-0 inset-x-0 z-[1000] p-6">
+    <div class="max-w-7xl mx-auto glass rounded-[2.5rem] p-4 flex justify-between items-center border border-white/10">
+        <div class="flex items-center gap-4">
+            <div class="bg-indigo-600 w-12 h-12 rounded-2xl flex items-center justify-center font-black italic shadow-2xl shadow-indigo-600/30 text-white">V1</div>
+            <div>
+                <span class="text-xs font-black uppercase tracking-tighter block leading-none">VisionOne</span>
+                <div class="flex items-center gap-2 mt-1.5">
+                    <div class="status-pulse"></div>
+                    <span class="text-[8px] font-black uppercase text-emerald-400 tracking-[0.2em]">Infrastructure: Online</span>
                 </div>
             </div>
         </div>
-        
-        <div class="flex items-center gap-6">
-            <div class="hidden lg:flex items-center gap-10 mr-10">
-                <a href="#about" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white transition">Nodes</a>
-                <a href="#pricing" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white transition">Tarife</a>
-                <a href="#setup" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white transition">Installation</a>
-            </div>
-            <button onclick="toggleSidebar()" class="w-14 h-14 flex items-center justify-center bg-white/5 rounded-2xl border border-white/10 transition hover:bg-white/10">
-                <i class="fas fa-bars-staggered text-xl"></i>
-            </button>
+        <div class="hidden md:flex gap-10 text-[10px] font-black uppercase tracking-[0.3em] italic">
+            <a href="#about" class="hover:text-indigo-400 transition">About</a>
+            <a href="#pricing" class="hover:text-indigo-400 transition">Pricing</a>
+            <a href="#setup" class="hover:text-indigo-400 transition">Setup</a>
+            <a href="#faq" class="hover:text-indigo-400 transition">FAQ</a>
         </div>
+        <a href="https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ" target="_blank" class="bg-indigo-600 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-500 transition">Support</a>
     </div>
 </nav>
 
-<div id="sidebar" class="fixed inset-y-0 right-0 w-full md:w-[550px] glass-thick z-[1100] translate-x-full transition-transform duration-700 p-20 flex flex-col shadow-3xl">
-    <div class="flex justify-between items-center mb-24">
-        <span class="text-[10px] font-black uppercase tracking-[0.5em] text-slate-500">Navigation Menu</span>
-        <button onclick="toggleSidebar()" class="text-4xl hover:text-indigo-500 transition-all">✕</button>
-    </div>
-    <div class="flex flex-col gap-12">
-        <a href="#about" onclick="toggleSidebar()" class="text-6xl font-black italic uppercase tracking-tighter hover:text-indigo-500 transition-all flex items-center gap-6">About <i class="fas fa-arrow-right text-xs opacity-20"></i></a>
-        <a href="#pricing" onclick="toggleSidebar()" class="text-6xl font-black italic uppercase tracking-tighter hover:text-indigo-500 transition-all flex items-center gap-6">Tiers <i class="fas fa-arrow-right text-xs opacity-20"></i></a>
-        <a href="#setup" onclick="toggleSidebar()" class="text-6xl font-black italic uppercase tracking-tighter hover:text-indigo-500 transition-all flex items-center gap-6">Setup <i class="fas fa-arrow-right text-xs opacity-20"></i></a>
-        <a href="#faq" onclick="toggleSidebar()" class="text-6xl font-black italic uppercase tracking-tighter hover:text-indigo-500 transition-all flex items-center gap-6">FAQ <i class="fas fa-arrow-right text-xs opacity-20"></i></a>
-        <a href="#agb" onclick="toggleSidebar()" class="text-6xl font-black italic uppercase tracking-tighter text-slate-800 hover:text-slate-600 transition-all">AGB</a>
-    </div>
-    <div class="mt-auto pt-20 border-t border-white/5">
-        <p class="text-[10px] font-black uppercase text-slate-600 tracking-widest mb-6">Infrastruktur Status</p>
-        <div class="flex gap-4">
-            <div class="flex-1 p-5 bg-white/5 rounded-2xl border border-white/5 text-[9px] font-black uppercase tracking-widest">Latency: 4ms</div>
-            <div class="flex-1 p-5 bg-white/5 rounded-2xl border border-white/5 text-[9px] font-black uppercase tracking-widest text-emerald-500">Nodes: Active</div>
-        </div>
-    </div>
-</div>
-
-<section class="min-h-screen flex flex-col justify-center items-center px-6 text-center relative pt-32" data-aos="zoom-out">
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(99,102,241,0.2),transparent_60%)] -z-10"></div>
-    <div class="mb-14 px-8 py-3 bg-indigo-500/10 rounded-full border border-indigo-500/20 text-indigo-400 text-[10px] font-black uppercase tracking-[0.5em] italic">
-        Next-Generation Data Routing 2026
-    </div>
-    <h1 class="text-7xl md:text-[11rem] font-[900] uppercase italic leading-[0.75] mb-16 tracking-tighter hero-text">PREMIUM<br><span class="text-indigo-500 drop-shadow-[0_0_50px_rgba(99,102,241,0.4)]">NODES.</span></h1>
-    <p class="max-w-3xl text-xs md:text-sm text-slate-500 font-bold uppercase tracking-[0.5em] leading-[2.5] italic mb-20 px-4">
-        Manuelle Echtzeit-Aktivierung • Dedicated Backbone • No Logs Policy • High-Speed Validierung
+<section class="min-h-screen flex flex-col justify-center items-center px-6 text-center relative pt-20">
+    <h1 class="text-7xl md:text-[10rem] font-black uppercase italic leading-[0.85] tracking-tighter mb-10 neon-text" data-aos="zoom-out" data-aos-duration="1500">
+        ULTRA<br><span class="text-indigo-500 italic">SYNC.</span>
+    </h1>
+    <p class="max-w-2xl text-[10px] md:text-xs text-slate-400 font-black uppercase tracking-[0.6em] leading-loose italic mb-12" data-aos="fade-up">
+        Next-Generation Media Activation • 4K-RAW Performance • Global Nodes
     </p>
-    <div class="flex flex-col md:flex-row gap-8 w-full max-w-2xl">
-        <a href="#pricing" class="flex-1 py-9 rounded-[3rem] font-black uppercase text-xs tracking-[0.3em] bg-indigo-600 btn-glow">Service Wählen</a>
-        <a href="#setup" class="flex-1 glass py-9 rounded-[3rem] font-black uppercase text-xs tracking-[0.3em] italic hover:bg-white/10 transition">Installation</a>
+    <div class="flex flex-col md:flex-row gap-6 w-full max-w-lg" data-aos="fade-up" data-aos-delay="200">
+        <a href="#pricing" class="flex-1 bg-indigo-600 py-7 rounded-[2rem] font-black uppercase text-[11px] tracking-widest shadow-2xl shadow-indigo-600/40 hover:scale-105 transition-all">Abos Öffnen</a>
+        <a href="#setup" class="flex-1 glass py-7 rounded-[2rem] font-black uppercase text-[11px] tracking-widest italic hover:bg-white/10 transition-all">Installation</a>
     </div>
 </section>
 
-<section id="about" class="py-48 px-6 bg-slate-950/30" data-aos="fade-up">
-    <div class="max-w-7xl mx-auto">
-        <div class="grid lg:grid-cols-2 gap-24 items-center">
-            <div class="relative">
-                <div class="absolute -inset-10 bg-indigo-600/10 blur-[100px] rounded-full"></div>
-                <h2 class="text-5xl md:text-8xl font-black uppercase italic mb-12 tracking-tighter leading-tight relative">DIE<br><span class="text-indigo-500">TECHNIK</span></h2>
-                <p class="text-slate-400 text-sm font-bold uppercase italic leading-[2.5] mb-12 tracking-widest relative">
-                    Wir hosten keine Inhalte. VisionOne ist eine spezialisierte Routing-Infrastruktur, die Ihre Player-MAC mit globalen Hochgeschwindigkeits-Servern synchronisiert. Jede ID wird verschlüsselt in unserer Firebase Cloud hinterlegt.
-                </p>
-                <div class="grid grid-cols-2 gap-8 relative">
-                    <div class="p-8 glass rounded-[2.5rem]">
-                        <div class="text-3xl font-black text-white mb-2 italic">10GBit/s</div>
-                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Backbone Speed</p>
-                    </div>
-                    <div class="p-8 glass rounded-[2.5rem]">
-                        <div class="text-3xl font-black text-indigo-500 mb-2 italic">256-Bit</div>
-                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Encryption</p>
-                    </div>
-                </div>
-            </div>
-            <div class="glass p-16 rounded-[4rem] border-white/5 shadow-3xl">
-                <i class="fas fa-microchip text-indigo-500 text-5xl mb-12"></i>
-                <h4 class="text-2xl font-black uppercase italic mb-8">Hardware Validierung</h4>
-                <p class="text-xs text-slate-500 font-bold uppercase leading-[2.2] tracking-widest italic mb-10">
-                    Unser System nutzt die eindeutige MAC-Adresse Ihres Endgeräts (FireTV, Android, Samsung), um eine dedizierte Route freizuschalten. Dies garantiert maximale Stabilität ohne Pufferzeiten, selbst bei 4K/8K Inhalten.
-                </p>
-                <div class="flex items-center gap-5 p-6 bg-indigo-600/5 rounded-3xl border border-indigo-500/10">
-                    <div class="live-indicator"></div>
-                    <span class="text-[10px] font-black uppercase text-indigo-400 tracking-widest">System Load: 12% — Optimal</span>
-                </div>
-            </div>
+<section id="about" class="py-32 px-6">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-10">
+        <div class="glass p-12 rounded-[4rem] text-center" data-aos="fade-up">
+            <i class="fas fa-bolt text-4xl text-indigo-500 mb-6"></i>
+            <h4 class="text-xl font-black uppercase italic mb-4">Express Sync</h4>
+            <p class="text-[10px] text-slate-500 font-bold uppercase">Aktivierung in Echtzeit über unser verschlüsseltes Gateway.</p>
+        </div>
+        <div class="glass p-12 rounded-[4rem] text-center" data-aos="fade-up" data-aos-delay="100">
+            <i class="fas fa-server text-4xl text-emerald-500 mb-6"></i>
+            <h4 class="text-xl font-black uppercase italic mb-4">UHD Nodes</h4>
+            <p class="text-[10px] text-slate-500 font-bold uppercase">Dedizierte Serverstrukturen für maximale Bitraten ohne Puffer.</p>
+        </div>
+        <div class="glass p-12 rounded-[4rem] text-center" data-aos="fade-up" data-aos-delay="200">
+            <i class="fas fa-headset text-4xl text-amber-500 mb-6"></i>
+            <h4 class="text-xl font-black uppercase italic mb-4">VIP Support</h4>
+            <p class="text-[10px] text-slate-500 font-bold uppercase">Direkte Anbindung an unsere Tech-Admins via Microsoft Teams.</p>
         </div>
     </div>
 </section>
 
-<section id="pricing" class="py-48" data-aos="fade-up">
-    <div class="max-w-7xl mx-auto px-10 mb-28 text-center">
-        <h2 class="text-6xl md:text-9xl font-black uppercase italic mb-10 tracking-tighter italic">SERVICE <span class="text-indigo-500">TIERS</span></h2>
-        <p class="text-[11px] text-slate-500 font-black uppercase tracking-[0.5em] italic">Wischen für Optionen • Sofort-Sync möglich</p>
+<section id="pricing" class="py-32 bg-slate-950/40 border-y border-white/5">
+    <div class="max-w-7xl mx-auto px-6 mb-24 text-center">
+        <h2 class="text-5xl md:text-7xl font-black uppercase italic mb-6">SERVICE <span class="text-indigo-500 italic">TIERS</span></h2>
+        <p class="text-[10px] text-slate-500 font-black uppercase tracking-[0.4em] italic">Wischen für alle 5 Optionen</p>
     </div>
     
-    <div class="pricing-grid max-w-[1900px] mx-auto pb-16">
-        <div class="pricing-card glass p-16 rounded-[5rem] flex flex-col border-white/5">
-            <span class="text-[10px] font-black text-slate-500 uppercase italic mb-14 tracking-[0.3em]">Entry Node</span>
-            <div class="text-8xl font-black mb-10 italic tracking-tighter">40 €</div>
-            <p class="text-xs font-black text-indigo-400 uppercase italic mb-14 tracking-widest">1 Monat Full Power</p>
-            <ul class="space-y-6 mb-20 flex-grow text-[12px] font-black text-slate-400 uppercase italic">
-                <li><i class="fas fa-check text-indigo-500 mr-3"></i> High-Speed Routing</li>
-                <li><i class="fas fa-check text-indigo-500 mr-3"></i> 24/7 Support Gateway</li>
-                <li class="opacity-30"><i class="fas fa-times mr-3"></i> Keine App Lizenz</li>
+    <div class="pricing-scroll max-w-[1800px] mx-auto">
+        <div class="price-card glass p-10 rounded-[4rem] flex flex-col" data-aos="fade-right">
+            <span class="text-[10px] font-black text-slate-500 uppercase italic mb-10">Starter</span>
+            <div class="text-6xl font-black mb-4 italic tracking-tighter text-white">40 €</div>
+            <p class="text-[10px] font-black text-indigo-400 uppercase italic mb-10 tracking-widest bg-indigo-500/5 py-2 rounded-xl border border-indigo-500/10">1 Monat Full Access</p>
+            <ul class="text-[11px] font-bold text-slate-400 uppercase space-y-4 mb-12 flex-grow italic">
+                <li><i class="fas fa-check text-indigo-500 mr-2"></i>4K/UHD Kanäle</li>
+                <li><i class="fas fa-check text-indigo-500 mr-2"></i>1 Verbindung</li>
             </ul>
-            <button onclick="openModal('1 Monat - 40€')" class="w-full py-8 rounded-[2.5rem] bg-white/5 border border-white/10 font-black text-xs uppercase tracking-widest hover:bg-white/10 transition">Konfigurieren</button>
+            <button onclick="openModal('1 Monat - 40€')" class="w-full py-7 rounded-3xl bg-white/5 border border-white/10 font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition">Wählen</button>
         </div>
 
-        <div class="pricing-card glass p-16 rounded-[5rem] flex flex-col border-emerald-500/10">
-            <span class="text-[10px] font-black text-emerald-500 uppercase italic mb-14 tracking-[0.3em]">Value Node</span>
-            <div class="text-8xl font-black mb-10 italic tracking-tighter">80 €</div>
-            <p class="text-xs font-black text-emerald-400 uppercase italic mb-14 tracking-widest">6 Monate Performance</p>
-            <ul class="space-y-6 mb-20 flex-grow text-[12px] font-black text-slate-400 uppercase italic">
-                <li><i class="fas fa-bolt text-emerald-500 mr-3"></i> Express Aktivierung</li>
-                <li><i class="fas fa-bolt text-emerald-500 mr-3"></i> Multi-Node Access</li>
-                <li class="opacity-30"><i class="fas fa-times mr-3"></i> Keine App Lizenz</li>
-            </ul>
-            <button onclick="openModal('6 Monate - 80€')" class="w-full py-8 rounded-[2.5rem] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-black text-xs uppercase tracking-widest hover:bg-emerald-500/20 transition">Konfigurieren</button>
+        <div class="price-card glass p-10 rounded-[4rem] flex flex-col" data-aos="fade-right" data-aos-delay="100">
+            <span class="text-[10px] font-black text-slate-500 uppercase italic mb-10">Value Pack</span>
+            <div class="text-6xl font-black mb-4 italic tracking-tighter text-white">80 €</div>
+            <p class="text-[10px] font-black text-emerald-400 uppercase italic mb-10 tracking-widest bg-emerald-500/5 py-2 rounded-xl border border-emerald-500/10">6 Monate Performance</p>
+            <button onclick="openModal('6 Monate - 80€')" class="w-full py-7 rounded-3xl bg-white/5 border border-white/10 font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition">Wählen</button>
         </div>
 
-        <div class="pricing-card bg-indigo-600 p-16 rounded-[5.5rem] flex flex-col shadow-3xl lg:scale-110 z-10 border border-white/20 relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-10 opacity-20">
-                <i class="fas fa-crown text-8xl rotate-12"></i>
-            </div>
-            <span class="text-[10px] font-black text-white/70 uppercase italic mb-14 tracking-[0.3em]">The Elite Standard</span>
-            <div class="text-9xl font-black mb-10 italic tracking-tighter text-white">120 €</div>
-            <p class="text-sm font-black text-white uppercase mb-14 italic tracking-[0.2em]">12 Monate Unlimited</p>
-            <ul class="space-y-7 mb-20 flex-grow text-[13px] font-black text-white uppercase italic">
-                <li><i class="fas fa-star mr-3"></i> Dedicated VIP Routing</li>
-                <li><i class="fas fa-star mr-3"></i> UHD/8K Optimization</li>
-                <li><i class="fas fa-star mr-3"></i> Priority Cloud Sync</li>
-            </ul>
-            <button onclick="openModal('12 Monate - 120€')" class="w-full py-9 rounded-[2.8rem] bg-white text-black font-black text-sm uppercase tracking-[0.2em] shadow-2xl hover:scale-105 transition active:scale-95">Jetzt Sichern</button>
+        <div class="price-card bg-indigo-600 p-10 rounded-[4.5rem] flex flex-col shadow-3xl lg:scale-110 z-10 border border-white/20" data-aos="zoom-in">
+            <div class="absolute top-8 right-12 bg-white text-black px-4 py-1.5 rounded-full text-[8px] font-black uppercase italic">Best Selection</div>
+            <span class="text-[10px] font-black text-white/70 uppercase italic mb-10">Yearly Unlimited</span>
+            <div class="text-8xl font-black mb-4 italic text-white tracking-tighter">120 €</div>
+            <p class="text-[11px] font-black text-white uppercase mb-10 italic tracking-widest text-center bg-white/10 py-3 rounded-2xl">12 Monate (VIP)</p>
+            <button onclick="openModal('12 Monate - 120€')" class="w-full py-8 rounded-[2rem] bg-white text-black font-black text-[12px] uppercase tracking-widest shadow-2xl transition-all active:scale-95">Jetzt Sichern</button>
         </div>
 
-        <div class="pricing-card glass p-16 rounded-[5rem] flex flex-col border-cyan-500/10">
-            <span class="text-[10px] font-black text-cyan-400 uppercase italic mb-14 tracking-[0.3em]">Diamond Node</span>
-            <div class="text-8xl font-black mb-10 italic tracking-tighter text-cyan-400">200 €</div>
-            <p class="text-xs font-black text-cyan-400 uppercase italic mb-14 tracking-widest">24 Monate Enterprise</p>
-            <ul class="space-y-6 mb-20 flex-grow text-[12px] font-black text-slate-400 uppercase italic">
-                <li><i class="fas fa-gem text-cyan-400 mr-3"></i> Fiber Gateway Line</li>
-                <li><i class="fas fa-gem text-cyan-400 mr-3"></i> Anti-Buffering Pro</li>
+        <div class="price-card glass p-10 rounded-[4rem] flex flex-col border-cyan-500/30" data-aos="fade-left">
+            <span class="text-[10px] font-black text-cyan-400 uppercase italic mb-10">Ultra Dedicated</span>
+            <div class="text-6xl font-black mb-4 italic text-cyan-400 tracking-tighter">200 €</div>
+            <p class="text-[10px] font-black text-cyan-400/60 uppercase italic mb-10 tracking-widest bg-cyan-500/5 py-2 rounded-xl border border-cyan-500/10">Diamond Sync</p>
+            <button onclick="openModal('Diamond - 200€')" class="w-full py-7 rounded-3xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-black text-[10px] uppercase tracking-widest hover:bg-cyan-500/20 transition">Wählen</button>
+        </div>
+
+        <div class="price-card glass p-10 rounded-[4rem] flex flex-col border-amber-500/30" data-aos="fade-left" data-aos-delay="100">
+            <span class="text-[10px] font-black text-amber-500 uppercase italic mb-10 tracking-widest">World Black VIP</span>
+            <div class="text-6xl font-black mb-4 italic text-amber-500 tracking-tighter">300 €</div>
+            <p class="text-[10px] font-black text-amber-500/60 uppercase italic mb-10 tracking-widest bg-amber-500/5 py-2 rounded-xl border border-amber-500/10">Multi-Line Support</p>
+            <ul class="text-[11px] font-bold text-slate-400 uppercase space-y-4 mb-12 flex-grow italic">
+                <li><i class="fas fa-crown text-amber-500 mr-2"></i>3 Gleichzeitige Geräte</li>
+                <li><i class="fas fa-crown text-amber-500 mr-2"></i>Private Server Slot</li>
             </ul>
-            <button onclick="openModal('Diamond - 200€')" class="w-full py-8 rounded-[2.5rem] bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 font-black text-xs uppercase tracking-widest hover:bg-cyan-400/20 transition">Konfigurieren</button>
+            <button onclick="openModal('World Black VIP - 300€')" class="w-full py-7 rounded-3xl bg-amber-500/10 border border-amber-500/30 text-amber-500 font-black text-[10px] uppercase tracking-widest hover:bg-amber-500/20 transition">Wählen</button>
         </div>
     </div>
 </section>
 
-<section id="setup" class="py-48 px-8 bg-slate-950/40" data-aos="fade-up">
-    <div class="max-w-6xl mx-auto">
-        <div class="text-center mb-36">
-            <h2 class="text-6xl md:text-9xl font-black uppercase italic mb-10 tracking-tighter italic">SETUP <span class="text-indigo-500">PROTOCOL</span></h2>
-            <p class="text-xs font-black text-slate-500 uppercase tracking-[0.6em] italic">Maximale Hardware-Performance in 3 Schritten</p>
-        </div>
-        
-        <div class="space-y-16">
-            <div class="glass p-14 rounded-[4.5rem] relative overflow-hidden group">
-                <div class="absolute -right-10 -top-10 text-[20rem] font-black text-white/5 italic group-hover:text-indigo-500/10 transition-colors">1</div>
-                <div class="relative z-10 flex flex-col md:flex-row gap-16">
-                    <div class="w-24 h-24 bg-indigo-600 rounded-[2rem] flex items-center justify-center text-3xl font-black italic shadow-2xl">01</div>
-                    <div>
-                        <h4 class="text-4xl font-black uppercase italic mb-8">Hardware Prep</h4>
-                        <div class="space-y-8 text-sm font-bold text-slate-400 uppercase italic leading-loose tracking-widest">
-                            <p>Navigieren Sie zu <b class="text-white">Einstellungen > Mein Fire TV > Info</b>.</p>
-                            <p>Klicken Sie 7x schnell auf den Gerätenamen, bis Sie <b class="text-white">Entwickler</b> sind.</p>
-                            <p>Aktivieren Sie unter <b class="text-white">Entwickleroptionen</b> das "Debugging" und "Apps unbekannter Herkunft".</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="glass p-14 rounded-[4.5rem] relative overflow-hidden group">
-                <div class="absolute -right-10 -top-10 text-[20rem] font-black text-white/5 italic group-hover:text-emerald-500/10 transition-colors">2</div>
-                <div class="relative z-10 flex flex-col md:flex-row gap-16">
-                    <div class="w-24 h-24 bg-emerald-600 rounded-[2rem] flex items-center justify-center text-3xl font-black italic shadow-2xl">02</div>
-                    <div class="flex-grow">
-                        <h4 class="text-4xl font-black uppercase italic mb-10 text-white">Software Deployment</h4>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-10">
-                            <div class="bg-black/40 p-12 rounded-[3.5rem] border border-white/5 text-center group/btn hover:border-indigo-500/50 transition">
-                                <span class="text-[10px] font-black text-slate-600 uppercase block mb-6 tracking-widest">IBO PLAYER</span>
-                                <p class="text-7xl font-black italic tracking-tighter text-white">327187</p>
-                                <i class="fas fa-download mt-8 text-indigo-500 opacity-20"></i>
-                            </div>
-                            <div class="bg-black/40 p-12 rounded-[3.5rem] border border-white/5 text-center group/btn hover:border-emerald-500/50 transition">
-                                <span class="text-[10px] font-black text-slate-600 uppercase block mb-6 tracking-widest">VU PLAYER</span>
-                                <p class="text-7xl font-black italic tracking-tighter text-white">7718585</p>
-                                <i class="fas fa-download mt-8 text-emerald-500 opacity-20"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="glass p-14 rounded-[4.5rem] border-l-[15px] border-indigo-600 relative overflow-hidden">
-                <div class="relative z-10 flex flex-col md:flex-row gap-16">
-                    <div class="w-24 h-24 bg-indigo-600 rounded-[2rem] flex items-center justify-center text-3xl font-black italic shadow-2xl">03</div>
-                    <div>
-                        <h4 class="text-4xl font-black uppercase italic mb-8 text-white">Syncing & Activation</h4>
-                        <p class="text-sm font-bold text-slate-400 uppercase italic leading-[2.5] tracking-widest mb-12">
-                            Öffnen Sie die installierte App und notieren Sie sich die <b class="text-white">MAC-ADRESSE</b>. Wählen Sie oben Ihren Tarif und geben Sie die MAC im Gateway-Panel ein. Senden Sie danach den Beleg an unseren Support.
-                        </p>
-                        <div class="p-10 bg-red-500/5 rounded-[3rem] border border-red-500/10 text-red-500 text-[11px] font-black uppercase italic tracking-[0.3em] leading-loose">
-                            Haftungsausschluss: Die Player-Apps (IBO/VU) sind Drittanbieter-Produkte. Nach einer 7-tägigen Testphase verlangen diese Apps eine eigene Lizenzgebühr (ca. 8€/Jahr), die nicht Teil unserer Routing-Gebühr ist.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="faq" class="py-48 px-8" data-aos="fade-up">
+<section id="setup" class="py-32 px-6">
     <div class="max-w-4xl mx-auto">
-        <h2 class="text-center text-6xl font-black uppercase italic mb-28 tracking-tighter italic">COMMON <span class="text-indigo-500">QUESTIONS</span></h2>
-        <div class="space-y-8">
-            <details class="glass p-12 rounded-[3.5rem] group cursor-pointer hover:bg-white/[0.02] transition">
-                <summary class="list-none flex justify-between items-center text-xs font-black uppercase italic tracking-[0.3em] text-white">
-                    Wie funktioniert die Freischaltung?
-                    <i class="fas fa-plus text-indigo-500 transition-all group-open:rotate-45"></i>
-                </summary>
-                <p class="mt-10 text-sm font-bold text-slate-500 uppercase italic leading-loose tracking-widest">
-                    Sobald Sie Ihre Bestellung über das Formular gesendet haben, werden die Daten an unsere Realtime Database übertragen. Nachdem unser Support den Zahlungseingang bestätigt hat, wird Ihre MAC-Adresse in unserem Backbone-Routing freigeschaltet.
-                </p>
-            </details>
-            <details class="glass p-12 rounded-[3.5rem] group cursor-pointer hover:bg-white/[0.02] transition">
-                <summary class="list-none flex justify-between items-center text-xs font-black uppercase italic tracking-[0.3em] text-white">
-                    Kann ich die MAC später ändern?
-                    <i class="fas fa-plus text-indigo-500 transition-all group-open:rotate-45"></i>
-                </summary>
-                <p class="mt-10 text-sm font-bold text-slate-500 uppercase italic leading-loose tracking-widest">
-                    Ja. Bei einem Gerätewechsel kontaktieren Sie einfach unseren Support. Die alte Route wird deaktiviert und auf die neue MAC-ID umgestellt.
-                </p>
-            </details>
-            <details class="glass p-12 rounded-[3.5rem] group cursor-pointer hover:bg-white/[0.02] transition">
-                <summary class="list-none flex justify-between items-center text-xs font-black uppercase italic tracking-[0.3em] text-white">
-                    Unterstützt VisionOne UHD?
-                    <i class="fas fa-plus text-indigo-500 transition-all group-open:rotate-45"></i>
-                </summary>
-                <p class="mt-10 text-sm font-bold text-slate-500 uppercase italic leading-loose tracking-widest">
-                    Unsere Infrastruktur ist für 8K-Streaming ausgelegt. Die tatsächliche Qualität hängt jedoch von Ihrer Internetleitung ab (empfohlen: mind. 50 Mbit/s für UHD).
-                </p>
-            </details>
-        </div>
-    </div>
-</section>
-
-<section id="agb" class="py-48 px-8 bg-slate-950/20" data-aos="fade-up">
-    <div class="max-w-5xl mx-auto glass p-16 rounded-[4.5rem]">
-        <h2 class="text-center text-5xl font-black uppercase italic mb-20 text-indigo-500 tracking-tighter">PROTOKOLL (AGB)</h2>
-        <div class="space-y-10 text-[11px] font-bold text-slate-500 uppercase leading-[2.5] tracking-widest italic text-center">
-            <p>1. VisionOne ist ein reiner Infrastruktur-Dienstleister für Datenrouting. Wir hosten oder übertragen keine Medieninhalte.</p>
-            <p>2. Die Dienstleistung gilt als erbracht, sobald die MAC-Adresse im Backbone-System freigeschaltet wurde. Ein Widerruf ist danach ausgeschlossen.</p>
-            <p>3. Der Nutzer ist für die rechtmäßige Nutzung seiner Hardware und Software-Clients selbst verantwortlich.</p>
-            <p>4. Wir garantieren eine Netzwerk-Verfügbarkeit von 99.5%. Wartungsarbeiten werden in der Support-Community angekündigt.</p>
-            <p>5. Jeglicher Versuch des Datenbank-Missbrauchs führt zur permanenten IP-Sperre.</p>
-        </div>
-    </div>
-</section>
-
-<footer class="py-40 px-10 border-t border-white/5 bg-black/50">
-    <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-32 mb-40">
-        <div>
-            <div class="flex items-center gap-5 mb-12">
-                <div class="bg-indigo-600 w-12 h-12 rounded-2xl flex items-center justify-center font-black italic shadow-lg">V1</div>
-                <span class="text-2xl font-black uppercase italic tracking-tighter">VisionOne</span>
+        <h2 class="text-center text-4xl font-black uppercase italic mb-20 text-indigo-500">Installation <span class="text-white">& Codes</span></h2>
+        <div class="space-y-6">
+            <div class="glass p-10 rounded-[3rem] border-l-8 border-indigo-600" data-aos="fade-left">
+                <h4 class="text-xl font-black uppercase italic mb-4">Firestick / Android</h4>
+                <p class="text-[11px] font-bold text-slate-400 uppercase mb-8">Installieren Sie die App "Downloader" und geben Sie einen der folgenden Codes ein:</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-black/40 p-6 rounded-2xl border border-white/5 text-center">
+                        <span class="text-[8px] text-slate-500 uppercase block mb-2 font-black">IBO Player Pro</span>
+                        <span class="text-3xl font-black italic text-indigo-500">327187</span>
+                    </div>
+                    <div class="bg-black/40 p-6 rounded-2xl border border-white/5 text-center">
+                        <span class="text-[8px] text-slate-500 uppercase block mb-2 font-black">VU Player Pro</span>
+                        <span class="text-3xl font-black italic text-indigo-500">7718585</span>
+                    </div>
+                </div>
             </div>
-            <p class="text-xs text-slate-600 font-bold uppercase italic leading-[2.5] tracking-widest">
-                Globales Gateway für Hochgeschwindigkeits-Infrastruktur. Wir setzen neue Maßstäbe in Sachen Performance und Diskretion.
-            </p>
-        </div>
-        <div class="flex flex-col gap-10">
-            <h5 class="text-xs font-black uppercase italic text-indigo-500 tracking-[0.4em]">Support Gateway</h5>
-            <a href="https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ" target="_blank" class="px-12 py-8 bg-white text-black font-black rounded-[2.5rem] uppercase text-xs tracking-[0.4em] text-center shadow-3xl hover:scale-105 transition active:scale-95">Support Beitreten</a>
         </div>
     </div>
-    <div class="text-center pt-20 border-t border-white/5 opacity-40">
-        <p class="text-[9px] text-slate-600 font-black uppercase tracking-[2em] italic">© 2026 VisionOne Infrastructure Global Services</p>
+</section>
+
+<section id="faq" class="py-32 px-6 bg-slate-950/20">
+    <div class="max-w-3xl mx-auto">
+        <h2 class="text-center text-4xl font-black uppercase italic mb-16">FAQ</h2>
+        <div class="space-y-4">
+            <details class="glass p-8 rounded-[2rem] cursor-pointer group">
+                <summary class="list-none flex justify-between items-center font-black uppercase italic text-[11px] tracking-widest">
+                    Wie funktioniert die Aktivierung? <i class="fas fa-plus text-indigo-500 transition-transform group-open:rotate-45"></i>
+                </summary>
+                <p class="mt-6 text-[10px] text-slate-400 font-bold uppercase leading-relaxed border-t border-white/5 pt-6">Nach dem Absenden Ihrer MAC-Adresse wird diese in unserem Gateway registriert. Der Prozess dauert in der Regel 15-60 Minuten.</p>
+            </details>
+            <details class="glass p-8 rounded-[2rem] cursor-pointer group">
+                <summary class="list-none flex justify-between items-center font-black uppercase italic text-[11px] tracking-widest">
+                    Brauche ich VPN? <i class="fas fa-plus text-indigo-500 transition-transform group-open:rotate-45"></i>
+                </summary>
+                <p class="mt-6 text-[10px] text-slate-400 font-bold uppercase leading-relaxed border-t border-white/5 pt-6">Unsere Nodes sind bereits verschlüsselt und optimiert. Ein zusätzliches VPN ist für die Stabilität nicht erforderlich.</p>
+            </details>
+        </div>
+    </div>
+</section>
+
+<footer class="py-32 px-6 border-t border-white/5 text-center">
+    <div class="max-w-4xl mx-auto">
+        <h3 class="text-[10px] font-black uppercase text-indigo-400 mb-8 tracking-[0.3em]">AGB & Privacy</h3>
+        <p class="text-[9px] text-slate-600 uppercase font-bold leading-relaxed mb-12 px-10">
+            Wir bieten rein technische Infrastruktur-Dienstleistungen. Es findet keine dauerhafte Speicherung personenbezogener Daten statt. Alle Verkäufe sind nach Aktivierung der digitalen Dienstleistung final. © 2026 VisionOne Global.
+        </p>
+        <a href="https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ" target="_blank" class="px-12 py-6 bg-white text-black font-black rounded-2xl uppercase text-[10px] tracking-widest hover:bg-indigo-500 hover:text-white transition-all shadow-2xl">Community Gateway</a>
     </div>
 </footer>
 
-<div id="checkoutModal" class="fixed inset-0 z-[5000] hidden flex items-center justify-center bg-black/98 p-6 backdrop-blur-3xl">
-  <div id="modalContent" class="glass rounded-[5rem] p-16 max-w-xl w-full relative text-center border-white/10 shadow-3xl overflow-hidden" data-aos="zoom-in">
-    <div class="absolute -top-40 -left-40 w-96 h-96 bg-indigo-600/10 blur-[150px] rounded-full"></div>
-    
-    <button onclick="closeModal()" class="absolute top-12 right-12 text-slate-500 hover:text-white transition-all text-4xl">✕</button>
-    
-    <div class="mb-16">
-        <h3 class="text-4xl font-black mb-4 uppercase italic">ORDER <span class="text-indigo-500">GATEWAY</span></h3>
-        <p class="text-[10px] text-slate-500 font-black uppercase tracking-[0.4em] italic">Echtzeit-Übermittlung an Cloud Database</p>
+<div id="orderModal" class="fixed inset-0 z-[5000] hidden flex items-center justify-center bg-black/98 p-6 backdrop-blur-2xl">
+    <div id="modalBox" class="glass w-full max-w-lg p-12 rounded-[4rem] relative border border-white/10" data-aos="zoom-in">
+        <button onclick="closeModal()" class="absolute top-10 right-10 text-slate-500 hover:text-white transition text-2xl font-light">✕</button>
+        <h2 class="text-3xl font-black uppercase italic mb-2 text-center">SYNC <span class="text-indigo-500 italic">GATEWAY</span></h2>
+        <div id="planDisplay" class="text-center text-indigo-400 text-[10px] font-black uppercase mb-10 tracking-[0.3em] bg-indigo-500/10 py-3 rounded-2xl"></div>
+
+        <form id="orderForm" class="space-y-4">
+            <div class="relative">
+                <input type="text" id="macIn" maxlength="17" placeholder="MAC ADRESSE (00:AA:..)" class="w-full p-7 bg-white/5 border border-white/10 rounded-3xl text-[12px] font-black uppercase outline-none text-white tracking-widest" required>
+                <p id="macError" class="hidden text-red-500 text-[9px] font-black uppercase mt-3 ml-6 italic">MAC bereits für dieses Paket registriert!</p>
+            </div>
+            <input type="text" id="keyIn" placeholder="DEVICE KEY" class="w-full p-7 bg-white/5 border border-white/10 rounded-3xl text-[12px] font-black uppercase outline-none text-white tracking-widest" required>
+            
+            <button type="submit" id="subBtn" class="w-full py-8 bg-indigo-600 rounded-[2.5rem] font-black uppercase text-[11px] tracking-[0.2em] shadow-2xl shadow-indigo-600/40 mt-8 active:scale-95 transition-all">
+                <span id="btnTxt">Anfrage Senden</span>
+            </button>
+        </form>
     </div>
-
-    <div id="selectedPlanLabel" class="mb-14 p-8 bg-indigo-500/10 rounded-[2.8rem] text-indigo-400 text-sm font-black uppercase border border-indigo-500/20 tracking-[0.3em]"></div>
-    
-    <form id="orderForm" class="space-y-8 text-left relative z-10">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <input type="email" id="formEmail" placeholder="E-MAIL (OPTIONAL)" class="w-full p-8 bg-white/5 border border-white/10 rounded-3xl outline-none text-white text-[11px] font-black uppercase tracking-widest transition">
-          <select id="formPlayer" class="w-full p-8 bg-white/5 border border-white/10 rounded-3xl outline-none text-white text-[11px] font-black uppercase tracking-widest appearance-none cursor-pointer transition" required>
-            <option value="" disabled selected class="bg-slate-900">APP WÄHLEN</option>
-            <option value="IBO Player" class="bg-slate-900">IBO PLAYER</option>
-            <option value="VU Player Pro" class="bg-slate-900">VU PLAYER PRO</option>
-            <option value="Anderer" class="bg-slate-900">ANDERER PLAYER</option>
-          </select>
-      </div>
-
-      <input type="text" id="formAlias" placeholder="BENUTZER / ALIAS" class="w-full p-8 bg-white/5 border border-white/10 rounded-3xl outline-none text-white text-[11px] font-black uppercase tracking-widest transition" required>
-      
-      <div class="relative">
-          <input type="text" id="formMac" maxlength="17" placeholder="MAC-ADRESSE (Z.B. AB:12:C3...)" class="mac-input w-full p-8 bg-white/5 border border-white/10 rounded-3xl outline-none text-white text-[13px] font-black uppercase tracking-widest transition" required>
-          <p id="macError" class="hidden text-red-500 text-[10px] font-black uppercase mt-4 text-center italic tracking-widest">Fehler: MAC existiert bereits!</p>
-      </div>
-
-      <input type="text" id="formKey" placeholder="DEVICE KEY (FALLS VORHANDEN)" class="w-full p-8 bg-white/5 border border-white/10 rounded-3xl outline-none text-white text-[11px] font-black uppercase tracking-widest transition">
-      
-      <div class="pt-8">
-          <button type="submit" id="submitBtn" class="w-full py-9 bg-indigo-600 text-white font-black rounded-[2.8rem] uppercase text-xs tracking-[0.4em] shadow-2xl transition hover:bg-indigo-500 active:scale-95 disabled:opacity-50">
-              <span id="btnText">Daten Übermitteln</span>
-          </button>
-      </div>
-    </form>
-    
-    <p class="text-[9px] text-slate-700 mt-14 uppercase italic text-center tracking-widest">Verschlüsselte AES-256 Übertragung</p>
-  </div>
 </div>
 
 <script>
-    // 1. FIREBASE INITIALISIERUNG
-    const firebaseConfig = {
-        databaseURL: "https://db--merkez-default-rtdb.europe-west1.firebasedatabase.app/"
-    };
-
-    try {
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        console.log("Database initialized successfully.");
-    } catch (e) {
-        console.error("Firebase Init Error:", e);
-        document.getElementById('dbStatus').innerText = "DB Connection Error";
-        document.getElementById('dbStatus').classList.replace('text-emerald-400', 'text-red-500');
-    }
+    // FIREBASE INITIALISIERUNG
+    const firebaseConfig = { databaseURL: "https://db--merkez-default-rtdb.europe-west1.firebasedatabase.app/" };
+    firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 2. MAC-ADRESSE FIX (FÜR MAC/PC UND HEX-ZEICHEN)
-    const macInput = document.getElementById('formMac');
-    macInput.addEventListener('input', function(e) {
-        let val = e.target.value.toUpperCase();
-        // Erlaube nur 0-9 und A-F
-        let clean = val.replace(/[^0-9A-F]/g, '');
-        
-        // Auto-Formatierung XX:XX:XX:XX:XX:XX
-        let res = "";
-        for(let i = 0; i < clean.length && i < 12; i++) {
-            if(i > 0 && i % 2 === 0) res += ":";
-            res += clean[i];
+    AOS.init({ duration: 1000, once: true });
+
+    function openModal(p) {
+        document.getElementById('planDisplay').innerText = p;
+        document.getElementById('orderModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('orderModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    // AUTOMATISCHE MAC FORMATIERUNG (XX:XX:XX...)
+    document.getElementById('macIn').addEventListener('input', function(e) {
+        let v = e.target.value.toUpperCase().replace(/[^0-9A-F]/g, '');
+        let f = "";
+        for(let i=0; i<v.length && i<12; i++){
+            if(i>0 && i%2===0) f += ":";
+            f += v[i];
         }
-        
-        e.target.value = res;
-        
-        // UI Reset
+        e.target.value = f;
         document.getElementById('macError').classList.add('hidden');
-        document.getElementById('modalContent').classList.remove('shake');
     });
 
-    // 3. BESTELLUNG ÜBERMITTELN & DUBLETTEN-CHECK
-    const orderForm = document.getElementById('orderForm');
-    orderForm.addEventListener('submit', async function(e) {
+    // ORDER LOGIC & DUBLETTEN-CHECK
+    document.getElementById('orderForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        const btn = document.getElementById('submitBtn');
-        const txt = document.getElementById('btnText');
-        const mac = macInput.value;
-        const modal = document.getElementById('modalContent');
+        const btn = document.getElementById('subBtn'), txt = document.getElementById('btnTxt'), 
+              mac = document.getElementById('macIn').value, modal = document.getElementById('modalBox');
 
-        if(mac.length < 17) {
-            alert("Bitte vollständige MAC-Adresse eingeben.");
+        btn.disabled = true;
+        txt.innerText = "CHECKING DATABASE...";
+
+        // Check ob MAC bereits existiert
+        const snap = await db.ref('bestellungen').orderByChild('mac_adresse').equalTo(mac).once('value');
+        
+        if(snap.exists()) {
+            txt.innerText = "ERROR: DOUBLE";
+            document.getElementById('macError').classList.remove('hidden');
+            modal.classList.add('shake');
+            btn.disabled = false;
+            setTimeout(() => modal.classList.remove('shake'), 500);
             return;
         }
 
-        btn.disabled = true;
-        txt.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> Syncing...';
+        // Erfolgreich senden
+        txt.innerText = "SYNCHRONIZING...";
+        const data = {
+            paket: document.getElementById('planDisplay').innerText,
+            mac_adresse: mac,
+            device_key: document.getElementById('keyIn').value,
+            datum: new Date().toLocaleString('de-DE'),
+            status: "Neu"
+        };
 
-        try {
-            // A. Check ob MAC bereits existiert
-            const snapshot = await db.ref('bestellungen').orderByChild('mac_adresse').equalTo(mac).once('value');
-            
-            if (snapshot.exists()) {
-                document.getElementById('macError').classList.remove('hidden');
-                modal.classList.add('shake');
-                btn.disabled = false;
-                txt.innerText = "FEHLER: EXISTIERT";
-                setTimeout(() => modal.classList.remove('shake'), 600);
-                return;
-            }
-
-            // B. Daten in die Database schreiben
-            const orderData = {
-                paket: document.getElementById('selectedPlanLabel').innerText,
-                email: document.getElementById('formEmail').value || "Keine Angabe",
-                player: document.getElementById('formPlayer').value,
-                alias: document.getElementById('formAlias').value,
-                mac_adresse: mac,
-                device_key: document.getElementById('formKey').value || "Keine Angabe",
-                timestamp: new Date().toLocaleString('de-DE'),
-                status: "Offen"
-            };
-
-            await db.ref('bestellungen').push(orderData);
-            
-            // C. Erfolgserlebnis
-            txt.innerHTML = '<i class="fas fa-check-double mr-3"></i> GESPEICHERT!';
-            btn.classList.replace('bg-indigo-600', 'bg-emerald-600');
-
+        db.ref('bestellungen').push().set(data).then(() => {
+            txt.innerText = "SUCCESS! REDIRECTING...";
             setTimeout(() => {
                 window.open("https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ", "_blank");
                 closeModal();
-                orderForm.reset();
                 btn.disabled = false;
-                btn.classList.replace('bg-emerald-600', 'bg-indigo-600');
-                txt.innerText = "Daten Übermitteln";
-            }, 1800);
-
-        } catch (error) {
-            console.error("Transmission Error:", error);
-            alert("Übertragungsfehler! Bitte prüfe deine Firebase-Regeln (read/write: true).");
-            btn.disabled = false;
-            txt.innerText = "Erneut versuchen";
-        }
+                txt.innerText = "Anfrage Senden";
+                document.getElementById('orderForm').reset();
+            }, 1200);
+        });
     });
 
-    // 4. UI ANIMATIONEN
-    AOS.init({ duration: 1200, once: true });
-
-    window.onload = () => {
-        if (!localStorage.getItem('vone_cookie_ack')) {
-            setTimeout(() => {
-                document.getElementById('cookieBanner').style.transform = "translateY(0)";
-            }, 1000);
-        }
-        initParticles();
-    };
-
-    function acceptCookies() {
-        localStorage.setItem('vone_cookie_ack', 'true');
-        document.getElementById('cookieBanner').style.transform = "translateY(200%)";
-    }
-
-    function toggleSidebar() { 
-        document.getElementById('sidebar').classList.toggle('translate-x-full'); 
-    }
-
-    function openModal(plan) {
-        document.getElementById('selectedPlanLabel').innerText = plan;
-        document.getElementById('checkoutModal').classList.replace('hidden', 'flex');
-    }
-
-    function closeModal() { 
-        document.getElementById('checkoutModal').classList.replace('flex', 'hidden'); 
-    }
-
-    // 5. BG PARTICLES
-    function initParticles() {
-        const canvas = document.getElementById('particles');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const particles = [];
-        for (let i = 0; i < 100; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: Math.random() * 1.5 + 0.5,
-                speed: Math.random() * 0.4 + 0.1,
-                alpha: Math.random() * 0.5
-            });
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.y -= p.speed;
-                if (p.y < -10) p.y = canvas.height + 10;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(99, 102, 241, ${p.alpha})`;
-                ctx.fill();
-            });
-            requestAnimationFrame(animate);
-        }
-        animate();
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+    // BACKGROUND PARTICLES
+    const canvas = document.getElementById('particles'), ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const pts = [];
+    for(let i=0; i<50; i++) pts.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*0.4+0.1});
+    function draw() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        pts.forEach(p => {
+            p.y -= p.s; if(p.y < -10) p.y = canvas.height+10;
+            ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(99,102,241,0.2)'; ctx.fill();
         });
+        requestAnimationFrame(draw);
     }
+    draw();
+    window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 </script>
 
 </body>
