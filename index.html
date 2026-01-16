@@ -22,7 +22,7 @@
     .status-pulse { width: 10px; height: 10px; background: #10b981; border-radius: 50%; box-shadow: 0 0 15px #10b981; animation: pulse 2s infinite; }
     @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
 
-    /* Horizontaler Scroll für Pricing auf Mobile */
+    /* Horizontaler Scroll für Pricing */
     .pricing-scroll { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 1.5rem; padding: 2rem 1rem; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
     .pricing-scroll::-webkit-scrollbar { display: none; }
     .price-card { min-width: 80vw; scroll-snap-align: center; flex-shrink: 0; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -40,8 +40,8 @@
     .cookie-banner.active { transform: translateY(0); visibility: visible; }
 
     #particles { position: fixed; inset: 0; pointer-events: none; z-index: -1; }
-    
-    /* Shake Effekt bei Fehlern */
+
+    /* Shake Animation für Fehler */
     .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
     @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
   </style>
@@ -56,9 +56,9 @@
         <h4 class="text-[11px] font-black uppercase tracking-widest">Sicherheits-Protokoll</h4>
     </div>
     <p class="text-[10px] text-slate-400 font-bold uppercase mb-6 leading-relaxed italic">
-        Wir verwenden ausschließlich funktionale Session-Cookies zur Validierung Ihrer Hardware-ID. Mit der Nutzung akzeptieren Sie unsere Datenschutzrichtlinien.
+        Wir verwenden ausschließlich funktionale Session-Cookies zur Validierung Ihrer Hardware-ID. Mit der Nutzung akzeptieren Sie unsere Richtlinien.
     </p>
-    <button onclick="acceptCookies()" class="w-full py-4 bg-indigo-600 text-white text-[10px] font-black uppercase rounded-2xl shadow-lg shadow-indigo-600/30 transition active:scale-95">Einverstanden</button>
+    <button onclick="acceptCookies()" class="w-full py-4 bg-indigo-600 text-white text-[10px] font-black uppercase rounded-2xl shadow-lg shadow-indigo-600/30">Einverstanden</button>
 </div>
 
 <nav class="fixed top-0 inset-x-0 z-[1000] p-4" data-aos="fade-down">
@@ -69,7 +69,7 @@
                 <span class="text-xs font-black uppercase tracking-tighter block leading-none">VisionOne</span>
                 <div class="flex items-center gap-2 mt-1.5">
                     <div class="status-pulse"></div>
-                    <span class="text-[8px] font-black uppercase text-emerald-400 tracking-widest italic">Infrastructure: Active</span>
+                    <span class="text-[8px] font-black uppercase text-emerald-400 tracking-widest">Server Status: Online</span>
                 </div>
             </div>
         </div>
@@ -77,13 +77,13 @@
     </div>
 </nav>
 
-<div id="sidebar" class="fixed inset-y-0 right-0 w-full md:w-96 glass z-[1100] translate-x-full transition-transform duration-500 p-12 flex flex-col gap-10 shadow-2xl">
-    <button onclick="toggleSidebar()" class="self-end text-3xl p-4 hover:rotate-90 transition-transform">✕</button>
+<div id="sidebar" class="fixed inset-y-0 right-0 w-full md:w-96 glass z-[1100] translate-x-full transition-transform duration-500 p-12 flex flex-col gap-10">
+    <button onclick="toggleSidebar()" class="self-end text-3xl p-4">✕</button>
     <div class="flex flex-col gap-8">
-        <a href="#pricing" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase tracking-tighter hover:text-indigo-400">Gebühren</a>
-        <a href="#setup" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase tracking-tighter hover:text-indigo-400">Installation</a>
-        <a href="#about" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase tracking-tighter hover:text-indigo-400">Über Uns</a>
-        <a href="#faq" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase tracking-tighter hover:text-indigo-400">FAQ</a>
+        <a href="#pricing" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase tracking-tighter">Gebühren</a>
+        <a href="#setup" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase tracking-tighter">Installation</a>
+        <a href="#about" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase tracking-tighter">Über Uns</a>
+        <a href="#faq" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase tracking-tighter">FAQ</a>
         <a href="#payments" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase tracking-tighter text-indigo-400">Zahlung</a>
     </div>
 </div>
@@ -97,8 +97,8 @@
         </p>
     </div>
     <div class="flex flex-col md:flex-row gap-5 w-full max-w-lg">
-        <a href="#pricing" class="flex-1 bg-indigo-600 py-7 rounded-[2rem] font-black uppercase text-[11px] tracking-widest shadow-2xl shadow-indigo-600/40 hover:scale-105 transition-transform">Tarife Öffnen</a>
-        <a href="#setup" class="flex-1 glass py-7 rounded-[2rem] font-black uppercase text-[11px] tracking-widest italic hover:bg-white/10 transition-transform">Setup Guide</a>
+        <a href="#pricing" class="flex-1 bg-indigo-600 py-7 rounded-[2rem] font-black uppercase text-[11px] tracking-widest shadow-2xl shadow-indigo-600/40">Tarife Öffnen</a>
+        <a href="#setup" class="flex-1 glass py-7 rounded-[2rem] font-black uppercase text-[11px] tracking-widest italic hover:bg-white/10">Setup Guide</a>
     </div>
 </section>
 
@@ -109,17 +109,17 @@
             <div class="glass p-10 rounded-[3rem]">
                 <div class="w-24 h-24 bg-indigo-600 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl font-black">A</div>
                 <h4 class="text-xl font-black uppercase mb-4">Admin</h4>
-                <p class="text-[10px] text-slate-400 uppercase italic">Gründer & Lead – 10+ Jahre IPTV Expertise</p>
+                <p class="text-[10px] text-slate-400 uppercase italic">Infrastructure Lead – 10+ Jahre Expertise</p>
             </div>
             <div class="glass p-10 rounded-[3rem]">
                 <div class="w-24 h-24 bg-emerald-600 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl font-black">S</div>
                 <h4 class="text-xl font-black uppercase mb-4">Support</h4>
-                <p class="text-[10px] text-slate-400 uppercase italic">24/7 Express Team – Realtime Aktivierungen</p>
+                <p class="text-[10px] text-slate-400 uppercase italic">24/7 Express Team – Realtime Sync</p>
             </div>
             <div class="glass p-10 rounded-[3rem]">
                 <div class="w-24 h-24 bg-amber-600 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl font-black">T</div>
                 <h4 class="text-xl font-black uppercase mb-4">Tech</h4>
-                <p class="text-[10px] text-slate-400 uppercase italic">Node & Routing Engineers – Dedicated Lines</p>
+                <p class="text-[10px] text-slate-400 uppercase italic">Routing Engineers – Dedicated UHD Lines</p>
             </div>
         </div>
     </div>
@@ -133,34 +133,23 @@
     <div class="pricing-scroll max-w-[1700px] mx-auto">
         <div class="price-card glass p-12 rounded-[4rem] flex flex-col">
             <span class="text-[10px] font-black text-slate-500 uppercase italic mb-10">Test-Gateway</span>
-            <div class="text-6xl font-black mb-4 italic tracking-tighter text-white">40 €</div>
+            <div class="text-6xl font-black mb-4 italic tracking-tighter">40 €</div>
             <p class="text-[10px] font-black text-indigo-400 uppercase italic mb-10 tracking-widest">1 Monat Full Access</p>
-            <ul class="text-[11px] font-bold text-slate-400 uppercase space-y-5 mb-12 italic flex-grow">
-                <li><i class="fas fa-check text-indigo-500 mr-3"></i>MAC-Routing Inkl.</li>
-                <li><i class="fas fa-times-circle text-red-500 mr-3"></i>Exkl. Player-Lizenz</li>
-            </ul>
-            <button onclick="openModal('1 Monat - 40€')" class="w-full py-6 rounded-3xl bg-white/5 border border-white/10 font-black text-[11px] uppercase tracking-widest hover:bg-white/10 transition-all">Wählen</button>
+            <button onclick="openModal('1 Monat - 40€')" class="w-full py-6 rounded-3xl bg-white/5 border border-white/10 font-black text-[11px] uppercase tracking-widest">Wählen</button>
         </div>
 
         <div class="price-card glass p-12 rounded-[4rem] flex flex-col">
             <span class="text-[10px] font-black text-slate-500 uppercase italic mb-10">Standard Pack</span>
-            <div class="text-6xl font-black mb-4 italic tracking-tighter text-white">80 €</div>
+            <div class="text-6xl font-black mb-4 italic tracking-tighter">80 €</div>
             <p class="text-[10px] font-black text-emerald-400 uppercase italic mb-10 tracking-widest">6 Monate Performance</p>
-            <ul class="text-[11px] font-bold text-slate-400 uppercase space-y-5 mb-12 italic flex-grow">
-                <li><i class="fas fa-check text-emerald-500 mr-3"></i>Optimiertes P/L</li>
-            </ul>
-            <button onclick="openModal('6 Monate - 80€')" class="w-full py-6 rounded-3xl bg-white/5 border border-white/10 font-black text-[11px] uppercase tracking-widest hover:bg-white/10 transition-all">Wählen</button>
+            <button onclick="openModal('6 Monate - 80€')" class="w-full py-6 rounded-3xl bg-white/5 border border-white/10 font-black text-[11px] uppercase tracking-widest">Wählen</button>
         </div>
 
         <div class="price-card bg-indigo-600 p-12 rounded-[4.5rem] flex flex-col shadow-3xl lg:scale-110 z-10 border border-white/20">
             <span class="text-[10px] font-black text-white/70 uppercase italic mb-10">VONE Bestseller</span>
             <div class="text-7xl font-black mb-4 italic text-white tracking-tighter">120 €</div>
             <p class="text-[11px] font-black text-white uppercase mb-10 italic">Effektiv 10 € / Monat</p>
-            <ul class="text-[12px] font-black text-white uppercase space-y-5 mb-12 italic flex-grow">
-                <li><i class="fas fa-star mr-3"></i>VIP Routing Priority</li>
-                <li><i class="fas fa-star mr-3"></i>Express Support</li>
-            </ul>
-            <button onclick="openModal('12 Monate - 120€')" class="w-full py-7 rounded-3xl bg-white text-black font-black text-[12px] uppercase tracking-widest shadow-2xl transition active:scale-95">Jetzt Sichern</button>
+            <button onclick="openModal('12 Monate - 120€')" class="w-full py-7 rounded-3xl bg-white text-black font-black text-[12px] uppercase tracking-widest shadow-2xl">Jetzt Sichern</button>
         </div>
 
         <div class="price-card glass p-12 rounded-[4rem] flex flex-col border-cyan-500/30">
@@ -181,16 +170,18 @@
 
 <section id="setup" class="py-32 px-6" data-aos="fade-up">
     <div class="max-w-5xl mx-auto">
-        <h2 class="text-center text-4xl font-black uppercase italic mb-20 italic">PRECISION <span class="text-indigo-400">INSTALLATION</span></h2>
+        <h2 class="text-center text-4xl font-black uppercase italic mb-20">PRECISION <span class="text-indigo-400">INSTALLATION</span></h2>
+        
         <div class="space-y-12">
             <div class="glass p-10 rounded-[3.5rem] relative border-l-8 border-indigo-600">
                 <div class="absolute -left-5 top-10 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center font-black italic">1</div>
                 <h4 class="text-xl font-black uppercase italic mb-8 ml-4">Vorbereitung (FireTV)</h4>
                 <p class="text-[11px] font-bold text-slate-400 uppercase italic leading-relaxed ml-4">Gehen Sie zu <b class="text-white">Einstellungen > Mein Fire TV > Info</b>. Klicken Sie 7x auf den Namen, bis Sie Entwickler sind.</p>
             </div>
+
             <div class="glass p-10 rounded-[3.5rem] relative border-l-8 border-white/20">
                 <div class="absolute -left-5 top-10 w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center font-black italic">2</div>
-                <h4 class="text-xl font-black uppercase italic mb-8 ml-4">App Codes</h4>
+                <h4 class="text-xl font-black uppercase italic mb-8 ml-4">App Codes (Downloader)</h4>
                 <div class="grid md:grid-cols-2 gap-6 ml-4">
                     <div class="bg-black/50 p-8 rounded-3xl border border-indigo-500/50 text-center">
                         <span class="text-[9px] font-black text-slate-500 block mb-3">IBO PLAYER</span>
@@ -200,6 +191,14 @@
                         <span class="text-[9px] font-black text-slate-500 block mb-3">VU PLAYER PRO</span>
                         <p class="text-5xl font-black italic text-indigo-400">7718585</p>
                     </div>
+                </div>
+            </div>
+
+            <div class="glass p-10 rounded-[3.5rem] relative border-l-8 border-red-500">
+                <div class="absolute -left-5 top-10 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center font-black italic">!</div>
+                <h4 class="text-xl font-black uppercase italic mb-8 ml-4">Wichtiger Hinweis</h4>
+                <div class="p-6 bg-red-500/10 rounded-2xl border border-red-500/20 text-red-400 text-[10px] font-black uppercase italic ml-4">
+                    Die Player-App (IBO/VU) verlangt nach 7 Tagen eine eigene Lizenzgebühr. Diese ist NICHT im Paketpreis enthalten.
                 </div>
             </div>
         </div>
@@ -240,7 +239,7 @@
                     <i class="fas fa-plus text-indigo-500 transition-transform"></i>
                 </summary>
                 <p class="mt-6 text-[11px] font-bold text-slate-400 uppercase italic leading-loose tracking-widest border-t border-white/5 pt-6">
-                    Ja. VisionOne stellt den Infrastruktur-Zugang bereit. Die Player-Lizenzen (wie IBO oder VU) sind Drittanbieter-Apps und erfordern nach einer Testphase eine eigene Aktivierung beim jeweiligen Entwickler.
+                    Ja. VisionOne stellt den Infrastruktur-Zugang bereit. Die Player-Lizenzen (wie IBO oder VU) sind Drittanbieter-Apps und erfordern eine eigene Aktivierung.
                 </p>
             </details>
             <details class="glass p-8 rounded-[2.5rem] group cursor-pointer">
@@ -249,7 +248,7 @@
                     <i class="fas fa-plus text-indigo-500 transition-transform"></i>
                 </summary>
                 <p class="mt-6 text-[11px] font-bold text-slate-400 uppercase italic leading-loose tracking-widest border-t border-white/5 pt-6">
-                    Sobald wir Ihre MAC-Adresse und den Beleg erhalten haben, erfolgt der Datenbank-Sync manuell. Dies dauert in der Regel 15 bis maximal 60 Minuten.
+                    Sobald wir Ihre MAC-Adresse und den Beleg erhalten haben, erfolgt der Datenbank-Sync manuell innerhalb von 15 bis maximal 60 Minuten.
                 </p>
             </details>
             <details class="glass p-8 rounded-[2.5rem] group cursor-pointer">
@@ -258,7 +257,7 @@
                     <i class="fas fa-plus text-indigo-500 transition-transform"></i>
                 </summary>
                 <p class="mt-6 text-[11px] font-bold text-slate-400 uppercase italic leading-loose tracking-widest border-t border-white/5 pt-6">
-                    Absolut. Wir speichern keine Klarnamen. Die MAC-ID Ihres Gerätes ist die einzige technische Kennung in unserer Realtime-Database.
+                    Absolut. Die MAC-ID Ihres Gerätes ist die einzige technische Kennung in unserer Realtime-Database.
                 </p>
             </details>
         </div>
@@ -267,8 +266,8 @@
 
 <footer class="py-24 px-6 border-t border-white/5 text-center">
     <div class="max-w-6xl mx-auto">
-        <a href="https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ" target="_blank" class="px-14 py-7 bg-white text-black font-black rounded-[2rem] uppercase text-[11px] tracking-[0.2em] shadow-2xl mb-12 inline-block transition hover:bg-indigo-600 hover:text-white">Support Gateway</a>
-        <p class="text-[8px] text-slate-800 font-black uppercase tracking-[1.5em] mt-10 italic">© 2026 VisionOne Infrastructure Global</p>
+        <a href="https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ" target="_blank" class="px-14 py-7 bg-white text-black font-black rounded-[2rem] uppercase text-[11px] tracking-[0.2em] shadow-2xl mb-12 inline-block">Support Gateway</a>
+        <p class="text-[8px] text-slate-800 font-black uppercase tracking-[1.5em] mt-10">© 2026 VisionOne Infrastructure Global</p>
     </div>
 </footer>
 
@@ -297,14 +296,14 @@
 </div>
 
 <script>
-    // 1. FIREBASE SETUP
+    // 1. FIREBASE INITIALISIERUNG
     const firebaseConfig = { databaseURL: "https://db--merkez-default-rtdb.europe-west1.firebasedatabase.app/" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     AOS.init({ duration: 800, once: true });
 
-    // 2. MAC AUTOMATIK (Fügt : hinzu & erlaubt Zahlen + A-F)
+    // 2. MAC AUTOMATIK (Fügt : hinzu & erlaubt Zahlen + Buchstaben A-F)
     document.getElementById('formMac').addEventListener('input', function(e) {
         let v = e.target.value.toUpperCase().replace(/[^0-9A-F]/g, '');
         let formatted = "";
@@ -316,7 +315,7 @@
         document.getElementById('macError').classList.add('hidden');
     });
 
-    // 3. DATABASE ORDER LOGIK
+    // 3. DATENBANK LOGIK & DUBLETTEN-CHECK
     document.getElementById('dbForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const btn = document.getElementById('submitBtn'), txt = document.getElementById('btnText'), mac = document.getElementById('formMac').value;
@@ -332,20 +331,20 @@
         if(snapshot.exists()) {
             document.getElementById('macError').classList.remove('hidden');
             modal.classList.add('shake');
-            txt.innerText = "FEHLER: DOPPELT";
+            txt.innerText = "MAC EXISTIERT BEREITS";
             btn.disabled = false;
             setTimeout(() => modal.classList.remove('shake'), 500);
             return;
         }
 
-        // Sende-Daten
+        // Neue Bestellung speichern
         const data = {
             paket: document.getElementById('selectedPlanLabel').innerText,
             email: document.getElementById('formEmail').value || "N/A",
             alias: document.getElementById('formAlias').value,
             mac_adresse: mac,
             device_key: document.getElementById('formKey').value || "N/A",
-            datum: new Date().toLocaleString('de-DE')
+            zeitpunkt: new Date().toLocaleString('de-DE')
         };
 
         db.ref('bestellungen').push().set(data).then(() => {
@@ -360,7 +359,7 @@
         });
     });
 
-    // NAVIGATION
+    // UI HELPER
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('translate-x-full'); }
     function openModal(plan) {
         document.getElementById('selectedPlanLabel').innerText = plan;
@@ -372,7 +371,7 @@
         document.getElementById('cookieBanner').classList.remove('active');
     }
 
-    // ONLOAD
+    // ONLOAD (COOKIES & PARTICLES)
     window.onload = () => {
         if (!localStorage.getItem('vone_accept')) {
             setTimeout(() => document.getElementById('cookieBanner').classList.add('active'), 1000);
