@@ -45,12 +45,12 @@
 <nav class="fixed top-0 inset-x-0 z-[1000] p-4" data-aos="fade-down">
     <div class="max-w-7xl mx-auto glass rounded-[2.5rem] p-4 flex justify-between items-center">
         <div class="flex items-center gap-4">
-            <div class="bg-indigo-600 w-12 h-12 rounded-2xl flex items-center justify-center font-black italic shadow-xl">V1</div>
+            <div class="bg-indigo-600 w-12 h-12 rounded-2xl flex items-center justify-center font-black italic shadow-xl shadow-indigo-600/20">V1</div>
             <div>
                 <span class="text-xs font-black uppercase tracking-tighter block leading-none">VisionOne</span>
                 <div class="flex items-center gap-2 mt-1.5">
                     <div class="status-pulse"></div>
-                    <span class="text-[8px] font-black uppercase text-emerald-400 tracking-widest">System: Online</span>
+                    <span class="text-[8px] font-black uppercase text-emerald-400 tracking-widest">System: Online (Realtime DB)</span>
                 </div>
             </div>
         </div>
@@ -64,13 +64,14 @@
         <a href="#pricing" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase">Gebühren</a>
         <a href="#setup" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase">Installation</a>
         <a href="#about" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase">Über Uns</a>
-        <a href="#faq" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase">FAQ</a>
+        <a href="#privacy" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase">Datenschutz</a>
+        <a href="#faq" onclick="toggleSidebar()" class="text-3xl font-black italic uppercase text-indigo-400">FAQ</a>
     </div>
 </div>
 
 <section class="min-h-screen flex flex-col justify-center items-center px-6 text-center" data-aos="fade-up">
     <h1 class="text-6xl md:text-[10rem] font-black uppercase italic leading-[0.8] mb-10 tracking-tighter">GLOBAL<br><span class="text-indigo-500">INFRA.</span></h1>
-    <p class="text-[10px] md:text-xs text-slate-400 font-black uppercase tracking-[0.5em] leading-loose italic mb-12">Hardware-Sync • Realtime Database • No Subscriptions</p>
+    <p class="text-[10px] md:text-xs text-slate-400 font-black uppercase tracking-[0.5em] leading-loose italic mb-12">Hardware-Sync • Realtime Database • Keine Abonnements</p>
     <div class="flex flex-col md:flex-row gap-5 w-full max-w-lg">
         <a href="#pricing" class="flex-1 bg-indigo-600 py-7 rounded-[2rem] font-black uppercase text-[11px] tracking-widest shadow-2xl text-center">Tarife Öffnen</a>
         <a href="#setup" class="flex-1 glass py-7 rounded-[2rem] font-black uppercase text-[11px] tracking-widest italic text-center">Setup Guide</a>
@@ -84,17 +85,17 @@
             <div class="glass p-10 rounded-[3rem]">
                 <div class="w-20 h-20 bg-indigo-600 rounded-full mx-auto mb-6 flex items-center justify-center text-3xl font-black">A</div>
                 <h4 class="text-xl font-black uppercase mb-2 italic">Admin</h4>
-                <p class="text-[10px] text-slate-400 uppercase tracking-widest">Network Lead</p>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest">Gründer & Infrastructure Lead</p>
             </div>
             <div class="glass p-10 rounded-[3rem]">
                 <div class="w-20 h-20 bg-emerald-600 rounded-full mx-auto mb-6 flex items-center justify-center text-3xl font-black">S</div>
                 <h4 class="text-xl font-black uppercase mb-2 italic">Support</h4>
-                <p class="text-[10px] text-slate-400 uppercase tracking-widest">24/7 Gateway</p>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest">24/7 Express Aktivierung</p>
             </div>
             <div class="glass p-10 rounded-[3rem]">
                 <div class="w-20 h-20 bg-amber-600 rounded-full mx-auto mb-6 flex items-center justify-center text-3xl font-black">T</div>
                 <h4 class="text-xl font-black uppercase mb-2 italic">Tech</h4>
-                <p class="text-[10px] text-slate-400 uppercase tracking-widest">Core Engine</p>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest">Dedicated UHD Nodes</p>
             </div>
         </div>
     </div>
@@ -105,55 +106,64 @@
         <div class="price-card glass p-12 rounded-[4rem] border border-white/5 flex flex-col">
             <span class="text-[10px] font-black text-slate-500 uppercase italic mb-10">Test-Gateway</span>
             <div class="text-6xl font-black mb-4 italic">40 €</div>
-            <p class="text-[10px] font-black text-indigo-400 uppercase mb-10">1 Monat Full Access</p>
-            <button onclick="openModal('1 Monat - 40€')" class="w-full py-6 rounded-3xl bg-white/5 border border-white/10 font-black text-[11px] uppercase tracking-widest hover:bg-white/10 transition">Wählen</button>
+            <p class="text-[10px] font-black text-indigo-400 uppercase mb-10 italic">1 Monat Full Access</p>
+            <button onclick="openModal('1 Monat - 40€')" class="w-full py-6 rounded-3xl bg-white/5 border border-white/10 font-black text-[11px] uppercase tracking-widest">Wählen</button>
         </div>
 
         <div class="price-card glass p-12 rounded-[4rem] border border-white/5 flex flex-col">
             <span class="text-[10px] font-black text-slate-500 uppercase italic mb-10">Standard Pack</span>
             <div class="text-6xl font-black mb-4 italic">80 €</div>
-            <p class="text-[10px] font-black text-emerald-400 uppercase mb-10">6 Monate Performance</p>
-            <button onclick="openModal('6 Monate - 80€')" class="w-full py-6 rounded-3xl bg-white/5 border border-white/10 font-black text-[11px] uppercase tracking-widest hover:bg-white/10 transition">Wählen</button>
+            <p class="text-[10px] font-black text-emerald-400 uppercase mb-10 italic">6 Monate Performance</p>
+            <button onclick="openModal('6 Monate - 80€')" class="w-full py-6 rounded-3xl bg-white/5 border border-white/10 font-black text-[11px] uppercase tracking-widest">Wählen</button>
         </div>
 
         <div class="price-card bg-indigo-600 p-12 rounded-[4.5rem] flex flex-col shadow-3xl lg:scale-110 z-10">
             <span class="text-[10px] font-black text-white/70 uppercase italic mb-10">VONE Bestseller</span>
             <div class="text-7xl font-black mb-4 italic text-white">120 €</div>
-            <p class="text-[11px] font-black text-white uppercase mb-10">12 Monate (VIP Access)</p>
-            <button onclick="openModal('12 Monate - 120€')" class="w-full py-7 rounded-3xl bg-white text-black font-black text-[12px] uppercase tracking-widest shadow-2xl transition active:scale-95">Jetzt Aktivieren</button>
+            <p class="text-[11px] font-black text-white uppercase mb-10 italic">12 Monate (VIP Access)</p>
+            <button onclick="openModal('12 Monate - 120€')" class="w-full py-7 rounded-3xl bg-white text-black font-black text-[12px] uppercase tracking-widest shadow-2xl">Jetzt Aktivieren</button>
         </div>
 
         <div class="price-card glass p-12 rounded-[4rem] border border-cyan-500/20 flex flex-col">
             <span class="text-[10px] font-black text-cyan-400 uppercase italic mb-10">UHD Dedicated</span>
             <div class="text-6xl font-black mb-4 italic text-cyan-400">200 €</div>
-            <p class="text-[10px] font-black text-cyan-400/60 uppercase mb-10">Diamond Upgrade</p>
-            <button onclick="openModal('Diamond - 200€')" class="w-full py-6 rounded-3xl bg-cyan-500/10 border border-cyan-500/30 font-black text-[11px] uppercase text-cyan-400 tracking-widest hover:bg-cyan-500/20 transition">Wählen</button>
+            <p class="text-[10px] font-black text-cyan-400/60 uppercase mb-10 italic">Diamond Upgrade</p>
+            <button onclick="openModal('Diamond - 200€')" class="w-full py-6 rounded-3xl bg-cyan-500/10 border border-cyan-500/30 font-black text-[11px] uppercase text-cyan-400 tracking-widest">Wählen</button>
         </div>
 
         <div class="price-card vip-border glass p-12 rounded-[4rem] border flex flex-col">
             <span class="text-[10px] font-black text-amber-500 uppercase italic mb-10">World Black VIP</span>
             <div class="text-6xl font-black mb-4 italic text-amber-500">300 €</div>
-            <p class="text-[10px] font-black text-amber-500/60 uppercase mb-10">Full Service Tier</p>
-            <button onclick="openModal('World Black VIP - 300€')" class="w-full py-6 rounded-3xl bg-amber-500/10 border border-amber-500/20 font-black text-[11px] uppercase text-amber-500 tracking-widest hover:scale-105 transition">VIP Order</button>
+            <p class="text-[10px] font-black text-amber-500/60 uppercase mb-10 italic">Full Service Tier</p>
+            <button onclick="openModal('World Black VIP - 300€')" class="w-full py-6 rounded-3xl bg-amber-500/10 border border-amber-500/20 font-black text-[11px] uppercase text-amber-500 tracking-widest">VIP Order</button>
         </div>
     </div>
 </section>
 
 <section id="setup" class="py-32 px-6" data-aos="fade-up">
     <div class="max-w-5xl mx-auto">
-        <h2 class="text-center text-4xl md:text-5xl font-black uppercase italic mb-20">INSTALLATION</h2>
-        <div class="grid md:grid-cols-2 gap-10">
-            <div class="glass p-10 rounded-[3rem] border-l-8 border-indigo-600">
-                <h4 class="text-xl font-black uppercase italic mb-4">FireTV / Android</h4>
-                <p class="text-[11px] text-slate-400 uppercase italic leading-loose">
-                    Download App laden -> Code <b class="text-white">327187</b> (IBO) oder <b class="text-white">7718585</b> (VU) eingeben -> MAC Adresse notieren.
+        <h2 class="text-center text-4xl font-black uppercase italic mb-20 italic">PRECISION <span class="text-indigo-400">INSTALLATION</span></h2>
+        <div class="space-y-12">
+            <div class="glass p-10 rounded-[3.5rem] relative border-l-8 border-indigo-600">
+                <div class="absolute -left-5 top-10 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center font-black italic">1</div>
+                <h4 class="text-xl font-black uppercase italic mb-8 ml-4">Vorbereitung (FireTV / Android)</h4>
+                <p class="text-[11px] font-bold text-slate-400 uppercase italic leading-relaxed ml-4">
+                    Einstellungen > Mein Fire TV > Info. Klicken Sie <b class="text-white">7x auf den Namen</b>. Aktivieren Sie unter Entwickleroptionen <b class="text-white">Apps unbekannter Herkunft</b>.
                 </p>
             </div>
-            <div class="glass p-10 rounded-[3rem] border-l-8 border-white/10">
-                <h4 class="text-xl font-black uppercase italic mb-4">Smart TV</h4>
-                <p class="text-[11px] text-slate-400 uppercase italic leading-loose">
-                    Suchen Sie im Store nach "IBO Player" oder "VU Player Pro". Starten Sie die App und senden Sie uns die MAC-Adresse.
-                </p>
+            <div class="glass p-10 rounded-[3.5rem] relative border-l-8 border-white/20">
+                <div class="absolute -left-5 top-10 w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center font-black italic">2</div>
+                <h4 class="text-xl font-black uppercase italic mb-8 ml-4">App Codes</h4>
+                <div class="grid md:grid-cols-2 gap-6 ml-4">
+                    <div class="bg-black/50 p-8 rounded-3xl border border-indigo-500/30 text-center">
+                        <span class="text-[9px] font-black text-slate-500 block mb-3 uppercase tracking-widest">IBO PLAYER</span>
+                        <p class="text-5xl font-black italic text-indigo-400">327187</p>
+                    </div>
+                    <div class="bg-black/50 p-8 rounded-3xl border border-indigo-500/30 text-center">
+                        <span class="text-[9px] font-black text-slate-500 block mb-3 uppercase tracking-widest">VU PLAYER PRO</span>
+                        <p class="text-5xl font-black italic text-indigo-400">7718585</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -161,23 +171,27 @@
 
 <section id="payments" class="py-24 px-6 bg-slate-900/20" data-aos="fade-up">
     <div class="max-w-6xl mx-auto text-center">
-        <h2 class="text-3xl font-black uppercase italic mb-16">ZAHLUNGSWEGE</h2>
+        <h2 class="text-3xl font-black uppercase italic mb-16">VALIDIERTE <span class="text-indigo-400">ZAHLUNGSWEGE</span></h2>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="glass p-10 rounded-[2.5rem] flex flex-col items-center">
+            <div class="glass p-10 rounded-[3rem] flex flex-col items-center">
                 <i class="fab fa-paypal text-3xl text-blue-500 mb-6"></i>
-                <h5 class="text-[10px] font-black uppercase italic tracking-widest">PayPal</h5>
+                <h5 class="text-[11px] font-black uppercase italic mb-2">PayPal (F&F)</h5>
+                <p class="text-[9px] text-slate-500 font-bold uppercase italic">Echtzeit-Bereitstellung.</p>
             </div>
-            <div class="glass p-10 rounded-[2.5rem] flex flex-col items-center">
+            <div class="glass p-10 rounded-[3rem] flex flex-col items-center">
                 <i class="fab fa-bitcoin text-3xl text-orange-500 mb-6"></i>
-                <h5 class="text-[10px] font-black uppercase italic tracking-widest">Crypto (BTC/LTC)</h5>
+                <h5 class="text-[11px] font-black uppercase italic mb-2">Crypto</h5>
+                <p class="text-[9px] text-slate-500 font-bold uppercase italic">BTC, USDT, LTC.</p>
             </div>
-            <div class="glass p-10 rounded-[2.5rem] flex flex-col items-center">
+            <div class="glass p-10 rounded-[3rem] flex flex-col items-center">
                 <i class="fas fa-credit-card text-3xl text-indigo-500 mb-6"></i>
-                <h5 class="text-[10px] font-black uppercase italic tracking-widest">Kreditkarte</h5>
+                <h5 class="text-[11px] font-black uppercase italic mb-2">Kreditkarte</h5>
+                <p class="text-[9px] text-slate-500 font-bold uppercase italic">Visa / Mastercard.</p>
             </div>
-            <div class="glass p-10 rounded-[2.5rem] flex flex-col items-center">
+            <div class="glass p-10 rounded-[3rem] flex flex-col items-center">
                 <i class="fas fa-university text-3xl text-emerald-500 mb-6"></i>
-                <h5 class="text-[10px] font-black uppercase italic tracking-widest">Überweisung</h5>
+                <h5 class="text-[11px] font-black uppercase italic mb-2">Überweisung</h5>
+                <p class="text-[9px] text-slate-500 font-bold uppercase italic">SEPA Instant.</p>
             </div>
         </div>
     </div>
@@ -185,21 +199,34 @@
 
 <section id="faq" class="py-32 px-6" data-aos="fade-up">
     <div class="max-w-3xl mx-auto">
-        <h2 class="text-center text-4xl font-black uppercase italic mb-20 text-indigo-400">FAQ</h2>
+        <h2 class="text-center text-4xl font-black uppercase italic mb-16 italic">COMMUNITY <span class="text-indigo-400">QUESTIONS</span></h2>
         <div class="space-y-4">
-            <details class="glass p-8 rounded-[2rem] cursor-pointer">
-                <summary class="flex justify-between items-center text-[11px] font-black uppercase italic">
-                    Kann ich mein Paket upgraden? <i class="fas fa-plus text-indigo-500"></i>
+            <details class="glass p-8 rounded-[2.5rem] group cursor-pointer">
+                <summary class="list-none flex justify-between items-center text-[11px] font-black uppercase italic tracking-widest">
+                    Muss ich die Player-App extra zahlen? <i class="fas fa-plus text-indigo-500 transition-transform"></i>
                 </summary>
-                <p class="mt-6 text-[11px] font-bold text-slate-400 uppercase italic">Ja, Sie können jederzeit auf ein höheres Paket wechseln. Geben Sie dazu einfach Ihre bestehende MAC im Formular an.</p>
+                <p class="mt-6 text-[11px] font-bold text-slate-400 uppercase italic tracking-widest leading-loose">
+                    Ja. VisionOne stellt den Infrastruktur-Zugang. Die Player-Lizenzen (IBO, VU etc.) sind Software von Drittanbietern.
+                </p>
             </details>
-            <details class="glass p-8 rounded-[2rem] cursor-pointer">
-                <summary class="flex justify-between items-center text-[11px] font-black uppercase italic">
-                    Wie lange dauert die Freischaltung? <i class="fas fa-plus text-indigo-500"></i>
+            <details class="glass p-8 rounded-[2.5rem] group cursor-pointer">
+                <summary class="list-none flex justify-between items-center text-[11px] font-black uppercase italic tracking-widest">
+                    Kann ich mein Paket upgraden? <i class="fas fa-plus text-indigo-500 transition-transform"></i>
                 </summary>
-                <p class="mt-6 text-[11px] font-bold text-slate-400 uppercase italic">Nach Zahlungseingang erfolgt die Aktivierung in der Regel innerhalb von 30-60 Minuten.</p>
+                <p class="mt-6 text-[11px] font-bold text-slate-400 uppercase italic tracking-widest leading-loose">
+                    Ja! Das System erkennt Ihre MAC-ID automatisch. Ein Upgrade ist jederzeit durch eine neue Bestellung möglich.
+                </p>
             </details>
         </div>
+    </div>
+</section>
+
+<section id="privacy" class="py-32 px-6 bg-slate-900/10" data-aos="fade-up">
+    <div class="max-w-4xl mx-auto glass p-12 rounded-[4rem]">
+        <h2 class="text-center text-3xl font-black uppercase italic mb-12 text-indigo-400">DATENSCHUTZ & AGB</h2>
+        <p class="text-[10px] text-slate-500 font-bold uppercase italic leading-loose text-center">
+            Keine Speicherung persönlicher Daten. MAC-Einträge werden nur für die technische Bereitstellung genutzt. Keine Rückerstattung nach Aktivierung. Es gelten deutsche Gesetze.
+        </p>
     </div>
 </section>
 
@@ -208,27 +235,27 @@
     <p class="text-[8px] text-slate-800 font-black uppercase tracking-[1em]">© 2026 VisionOne Infrastructure</p>
 </footer>
 
-<div id="orderModal" class="fixed inset-0 z-[5000] hidden flex items-center justify-center bg-black/95 p-6">
+<div id="orderModal" class="fixed inset-0 z-[5000] hidden flex items-center justify-center bg-black/98 p-6">
     <div id="modalContent" class="glass w-full max-w-lg p-12 rounded-[4rem] relative border border-white/10">
         <button onclick="closeModal()" class="absolute top-10 right-10 text-slate-500 hover:text-white transition text-2xl">✕</button>
-        <h2 class="text-3xl font-black uppercase italic mb-2 text-center text-white">GATEWAY <span class="text-indigo-500 italic">SYNC</span></h2>
-        <div id="planDisplay" class="text-center text-indigo-400 text-[10px] font-black uppercase mb-10 tracking-[0.3em] bg-indigo-500/5 py-3 rounded-xl border border-indigo-500/10"></div>
+        <h2 class="text-3xl font-black uppercase italic mb-2 text-center text-white tracking-tighter">GATEWAY <span class="text-indigo-500 italic">SYNC</span></h2>
+        <div id="planDisplay" class="text-center text-indigo-400 text-[10px] font-black uppercase mb-10 tracking-[0.3em] bg-indigo-500/5 py-3 rounded-xl border border-indigo-500/10 italic"></div>
         <form id="orderForm" class="space-y-4">
-            <input type="text" id="aliasInput" placeholder="ALIAS / BENUTZERNAME" class="w-full p-6 bg-white/5 border border-white/10 rounded-2xl text-[11px] font-black uppercase outline-none focus:border-indigo-500 text-white" required>
+            <input type="text" id="aliasInput" placeholder="ALIAS / BENUTZERNAME" class="w-full p-6 bg-white/5 border border-white/10 rounded-2xl text-[11px] font-black uppercase outline-none focus:border-indigo-500 text-white tracking-widest" required>
             <div class="relative">
-                <input type="text" id="macInput" maxlength="17" placeholder="MAC ADRESSE (00:AA:BB...)" class="mac-input w-full p-6 bg-white/5 border border-white/10 rounded-2xl text-[13px] font-black uppercase outline-none focus:border-indigo-500 text-white" required>
+                <input type="text" id="macInput" maxlength="17" placeholder="MAC ADRESSE (00:AA:BB...)" class="mac-input w-full p-6 bg-white/5 border border-white/10 rounded-2xl text-[13px] font-black uppercase outline-none focus:border-indigo-500 text-white tracking-widest" required>
                 <p id="macStatusMsg" class="hidden text-[9px] font-black uppercase mt-2 text-center italic"></p>
             </div>
-            <input type="text" id="keyInput" placeholder="DEVICE KEY (WENN VORHANDEN)" class="w-full p-6 bg-white/5 border border-white/10 rounded-2xl text-[11px] font-black uppercase outline-none focus:border-indigo-500 text-white">
+            <input type="text" id="keyInput" placeholder="DEVICE KEY (WENN VORHANDEN)" class="w-full p-6 bg-white/5 border border-white/10 rounded-2xl text-[11px] font-black uppercase outline-none focus:border-indigo-500 text-white tracking-widest">
             <button type="submit" id="submitBtn" class="w-full py-7 bg-indigo-600 rounded-3xl font-black uppercase text-xs tracking-widest shadow-2xl mt-6 hover:bg-indigo-500 transition active:scale-95">
                 <span id="btnText">Daten Senden & Support</span>
             </button>
+            <p class="text-[9px] text-red-500 font-black italic uppercase text-center mt-4">Wichtig: Player-Lizenz separat kaufen!</p>
         </form>
     </div>
 </div>
 
 <script>
-    // Firebase Setup
     const firebaseConfig = { databaseURL: "https://db--merkez-default-rtdb.europe-west1.firebasedatabase.app/" };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
@@ -245,7 +272,7 @@
         document.getElementById('macStatusMsg').classList.add('hidden');
     });
 
-    // Formular & Upgrade Logik
+    // Form Logic with Upgrade Detection
     document.getElementById('orderForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const btn = document.getElementById('submitBtn'), txt = document.getElementById('btnText'), msg = document.getElementById('macStatusMsg'), modal = document.getElementById('modalContent');
@@ -284,17 +311,16 @@
         }
     });
 
-    // UI
     AOS.init({ duration: 800, once: true });
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('translate-x-full'); }
     function openModal(p) { document.getElementById('planDisplay').innerText = p; document.getElementById('orderModal').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
     function closeModal() { document.getElementById('orderModal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
 
-    // Particles
+    // Background Particles
     (function initParticles() {
         const c = document.getElementById('particles'), x = c.getContext('2d');
         c.width = window.innerWidth; c.height = window.innerHeight;
-        const p = Array(50).fill().map(() => ({x:Math.random()*c.width, y:Math.random()*c.height, s:Math.random()*0.5+0.1}));
+        const p = Array(60).fill().map(() => ({x:Math.random()*c.width, y:Math.random()*c.height, s:Math.random()*0.4+0.1}));
         function draw() {
             x.clearRect(0,0,c.width,c.height);
             p.forEach(e => { e.y-=e.s; if(e.y<-10)e.y=c.height; x.beginPath(); x.arc(e.x,e.y,1,0,7); x.fillStyle='rgba(99,102,241,0.2)'; x.fill(); });
