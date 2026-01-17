@@ -1,747 +1,710 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
-  <title>VONE — Official Infrastructure & Realtime Sync</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <title>VONE — Ultra-Infrastructure & Realtime Sync v2.5</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-  <style>
-    :root { --primary: #6366f1; --bg: #020617; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: #f8fafc; overflow-x: hidden; scroll-behavior: smooth; }
-    
-    .glass { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.08); }
-    .glass-heavy { background: rgba(7, 10, 25, 0.95); backdrop-filter: blur(30px); border: 1px solid rgba(99, 102, 241, 0.2); }
-    
-    .status-pulse { width: 12px; height: 12px; background: #10b981; border-radius: 50%; box-shadow: 0 0 20px #10b981; animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(1.3); } 100% { opacity: 1; transform: scale(1); } }
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.5);
+            --bg: #020617;
+            --card: rgba(15, 23, 42, 0.9);
+            --danger: #ef4444;
+            --success: #10b981;
+        }
 
-    .pricing-scroll { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 2rem; padding: 3rem 1rem; scrollbar-width: none; }
-    .pricing-scroll::-webkit-scrollbar { display: none; }
-    
-    .price-card { min-width: 85vw; scroll-snap-align: center; flex-shrink: 0; transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
-    @media (min-width: 768px) { .price-card { min-width: 380px; } }
-    @media (min-width: 1024px) { 
-        .price-card { min-width: 0; flex: 1; } 
-        .price-card:hover { transform: translateY(-25px) scale(1.03); z-index: 50; }
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: #f8fafc;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
 
-    .vip-border { border: 2px solid #fbbf24 !important; box-shadow: 0 0 40px rgba(251, 191, 36, 0.1); }
-    .hero-gradient { background: radial-gradient(circle at 50% 40%, rgba(99, 102, 241, 0.18), transparent 65%); }
-    
-    .mac-input { letter-spacing: 3px; font-family: 'Courier New', monospace; text-transform: uppercase; }
-    .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
-    @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+        /* --- UI COMPONENTS --- */
+        #particles { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+        
+        .glass { 
+            background: var(--card); 
+            backdrop-filter: blur(30px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
 
-    details summary::-webkit-details-marker { display: none; }
-    details[open] summary i { transform: rotate(180deg); color: #6366f1; }
-    
-    #particles { position: fixed; inset: 0; pointer-events: none; z-index: -1; }
-    
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #020617; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: #334155; }
-  </style>
+        .glass-heavy { 
+            background: rgba(7, 10, 25, 0.98); 
+            backdrop-filter: blur(50px); 
+            border: 1px solid rgba(99, 102, 241, 0.2); 
+        }
+
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 30%, rgba(99, 102, 241, 0.15), transparent 70%),
+                        radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.05), transparent 40%);
+        }
+
+        /* --- ANIMATIONS --- */
+        .status-pulse {
+            width: 12px; height: 12px; background: var(--success); border-radius: 50%;
+            box-shadow: 0 0 20px var(--success); animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.4; } }
+
+        .price-card {
+            min-width: 85vw; scroll-snap-align: center; border-radius: 4rem;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @media (min-width: 768px) { .price-card { min-width: 420px; } }
+        .price-card:hover { transform: translateY(-20px); border-color: var(--primary); }
+
+        /* --- BANNED OVERLAY --- */
+        #banned-screen {
+            position: fixed; inset: 0; background: #000; z-index: 9999999;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .terminal-text { font-family: 'Courier New', monospace; letter-spacing: 2px; }
+        .mac-input { letter-spacing: 4px; font-family: monospace; text-transform: uppercase; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+    </style>
 </head>
-<body class="antialiased">
+<body>
 
-<canvas id="particles"></canvas>
-
-<nav class="fixed top-0 inset-x-0 z-[1000] p-6" data-aos="fade-down">
-    <div class="max-w-7xl mx-auto glass rounded-[3rem] p-5 flex justify-between items-center shadow-2xl">
-        <div class="flex items-center gap-5">
-            <div class="bg-indigo-600 w-14 h-14 rounded-2xl flex items-center justify-center font-black italic text-xl shadow-lg shadow-indigo-600/30">V1</div>
-            <div class="hidden sm:block">
-                <span class="text-sm font-black uppercase tracking-widest block leading-none">VisionOne</span>
-                <div class="flex items-center gap-2 mt-2">
-                    <div class="status-pulse"></div>
-                    <span class="text-[9px] font-black uppercase text-emerald-400 tracking-[0.2em]">Node-Status: Active</span>
-                </div>
-            </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <a href="#setup" class="hidden md:block text-[10px] font-black uppercase tracking-widest px-6 py-3 border border-white/10 rounded-full hover:bg-white/5 transition">Setup Guide</a>
-            <button onclick="toggleSidebar()" class="w-14 h-14 flex items-center justify-center bg-white/5 rounded-2xl border border-white/10 hover:border-indigo-500/50 transition shadow-inner">
-                <i class="fas fa-bars-staggered text-xl text-indigo-400"></i>
-            </button>
+    <div id="banned-screen">
+        <div class="p-10 text-center border border-red-900/30 bg-red-950/10 rounded-[4rem] backdrop-blur-3xl">
+            <i class="fas fa-user-slash text-7xl text-red-600 mb-8 animate-pulse"></i>
+            <h1 class="text-6xl font-black italic uppercase tracking-tighter mb-4">Node Blocked</h1>
+            <p class="terminal-text text-red-500/60 text-xs uppercase mb-10">Hardware ID: <span id="banned-id-display">--:--:--</span></p>
+            <div class="h-px w-full bg-red-900/20 mb-10"></div>
+            <p class="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em]">Violation of Infrastructure Protocols Detected.</p>
         </div>
     </div>
-</nav>
 
-<div id="sidebar" class="fixed inset-y-0 right-0 w-full md:w-[450px] glass-heavy z-[1100] translate-x-full transition-transform duration-700 p-16 flex flex-col justify-between shadow-[-50px_0_100px_rgba(0,0,0,0.9)]">
-    <div>
-        <div class="flex justify-between items-center mb-20">
-            <span class="text-xs font-black uppercase tracking-[0.4em] text-indigo-500">Navigation</span>
-            <button onclick="toggleSidebar()" class="text-4xl font-light hover:text-indigo-500 transition">✕</button>
-        </div>
-        <nav class="flex flex-col gap-10">
-            <a href="#pricing" onclick="toggleSidebar()" class="group flex items-end gap-4 text-4xl font-black italic uppercase tracking-tighter hover:text-indigo-500 transition-colors">
-                <span class="text-indigo-600 text-sm mb-2 group-hover:translate-x-2 transition-transform">01</span> Gebühren
-            </a>
-            <a href="#setup" onclick="toggleSidebar()" class="group flex items-end gap-4 text-4xl font-black italic uppercase tracking-tighter hover:text-indigo-500 transition-colors">
-                <span class="text-indigo-600 text-sm mb-2 group-hover:translate-x-2 transition-transform">02</span> Installation
-            </a>
-            <a href="#about" onclick="toggleSidebar()" class="group flex items-end gap-4 text-4xl font-black italic uppercase tracking-tighter hover:text-indigo-500 transition-colors">
-                <span class="text-indigo-600 text-sm mb-2 group-hover:translate-x-2 transition-transform">03</span> Über Uns
-            </a>
-            <a href="#faq" onclick="toggleSidebar()" class="group flex items-end gap-4 text-4xl font-black italic uppercase tracking-tighter hover:text-indigo-500 transition-colors">
-                <span class="text-indigo-600 text-sm mb-2 group-hover:translate-x-2 transition-transform">04</span> FAQ
-            </a>
-            <a href="#privacy" onclick="toggleSidebar()" class="group flex items-end gap-4 text-4xl font-black italic uppercase tracking-tighter text-slate-500 hover:text-indigo-400 transition-colors">
-                <span class="text-indigo-600 text-sm mb-2 group-hover:translate-x-2 transition-transform">05</span> Legal
-            </a>
-        </nav>
-    </div>
-    <div class="pt-10 border-t border-white/5">
-        <p class="text-[9px] font-black uppercase text-slate-500 tracking-widest mb-4 italic">Social Infrastructure</p>
-        <div class="flex gap-6">
-            <a href="#" class="text-xl hover:text-indigo-500 transition"><i class="fab fa-telegram"></i></a>
-            <a href="#" class="text-xl hover:text-indigo-500 transition"><i class="fab fa-discord"></i></a>
-            <a href="#" class="text-xl hover:text-indigo-500 transition"><i class="fas fa-headset"></i></a>
-        </div>
-        <div class="mt-8 text-[8px] font-bold text-slate-600 uppercase tracking-widest">
-            VisionOne Core v2.0.4 • Build 2026.01.17
-        </div>
-    </div>
-</div>
+    <canvas id="particles"></canvas>
 
-<section class="min-h-screen flex flex-col justify-center items-center px-6 text-center relative hero-gradient" data-aos="zoom-out">
-    <div class="mb-10 inline-flex items-center gap-3 px-6 py-2 rounded-full border border-indigo-500/20 bg-indigo-500/5 backdrop-blur-md">
-        <span class="relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-        </span>
-        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400">V2.0 Core Aktiviert</span>
-    </div>
-    <h1 class="text-7xl md:text-[12rem] font-black uppercase italic leading-[0.75] mb-12 tracking-tighter">ULTRA<br><span class="text-indigo-500">INFRA.</span></h1>
-    <p class="max-w-2xl text-[10px] md:text-sm text-slate-400 font-bold uppercase tracking-[0.4em] leading-relaxed italic mb-16 px-4">
-        High-Performance Content Routing • No Logs Policy • Realtime Sync Database • Enterprise Stability
-    </p>
-    <div class="flex flex-col sm:flex-row gap-6 w-full max-w-xl px-6">
-        <a href="#pricing" class="group flex-1 bg-indigo-600 py-8 rounded-[2.5rem] font-black uppercase text-[12px] tracking-widest shadow-2xl shadow-indigo-600/40 hover:bg-indigo-500 transition-all flex items-center justify-center gap-3">
-            Pakete Ansehen <i class="fas fa-chevron-right text-[10px] group-hover:translate-x-1 transition"></i>
-        </a>
-        <a href="#setup" class="flex-1 glass py-8 rounded-[2.5rem] font-black uppercase text-[12px] tracking-widest italic hover:bg-white/10 transition border border-white/10">Setup Guide</a>
-    </div>
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-20">
-        <i class="fas fa-chevron-down text-2xl"></i>
-    </div>
-</section>
-
-<section id="about" class="py-40 px-6 border-t border-white/5" data-aos="fade-up">
-    <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col lg:flex-row gap-20 items-center">
-            <div class="lg:w-1/2">
-                <h2 class="text-5xl md:text-7xl font-black uppercase italic mb-10 leading-none">DIE <span class="text-indigo-500">MISSION</span></h2>
-                <div class="space-y-8 text-slate-400 font-bold uppercase italic text-sm tracking-wide leading-loose">
-                    <p>Seit über einem Jahrzehnt definiert unser Team die Grenzen digitaler Infrastruktur neu. Wir sind kein klassischer Provider – wir sind die Architekten hinter den stabilsten Nodes im Markt.</p>
-                    <p>Unsere Systeme basieren auf einer hybriden Cloud-Infrastruktur, die Lastspitzen in Echtzeit erkennt und durch automatisches Routing abfängt. Das Ergebnis: 99.9% Uptime für Ihren Zugang.</p>
-                </div>
-                <div class="grid grid-cols-2 gap-10 mt-16">
-                    <div>
-                        <div class="text-4xl font-black text-white mb-2 italic">10K+</div>
-                        <div class="text-[10px] font-black text-indigo-500 uppercase tracking-widest italic">Aktive Nodes</div>
-                    </div>
-                    <div>
-                        <div class="text-4xl font-black text-white mb-2 italic">&lt; 15ms</div>
-                        <div class="text-[10px] font-black text-indigo-500 uppercase tracking-widest italic">Response Time</div>
+    <nav class="fixed top-0 inset-x-0 z-[1000] p-6" data-aos="fade-down">
+        <div class="max-w-7xl mx-auto glass rounded-[3rem] p-4 flex justify-between items-center">
+            <div class="flex items-center gap-6">
+                <a href="#" class="bg-indigo-600 w-14 h-14 rounded-2xl flex items-center justify-center font-black italic text-xl shadow-lg shadow-indigo-600/30 hover:scale-110 active:scale-95 transition-all">
+                    V1
+                </a>
+                <div class="hidden md:block">
+                    <span class="text-sm font-black uppercase tracking-widest block leading-none">VisionOne <span class="text-indigo-500 text-[10px]">v2.5</span></span>
+                    <div class="flex items-center gap-2 mt-2">
+                        <div class="status-pulse"></div>
+                        <span class="text-[9px] font-black uppercase text-emerald-400 tracking-[0.2em]">Quantum-Node: Online</span>
                     </div>
                 </div>
             </div>
-            <div class="lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div class="glass p-12 rounded-[4rem] border-t-4 border-indigo-600 hover:scale-105 transition-transform duration-500">
-                    <i class="fas fa-shield-virus text-4xl text-indigo-500 mb-8"></i>
-                    <h4 class="text-xl font-black uppercase italic mb-4">Anonymity</h4>
-                    <p class="text-[11px] text-slate-500 font-bold uppercase leading-relaxed italic">Verschlüsselte MAC-Tunnel für maximale Privatsphäre ohne Logs.</p>
-                </div>
-                <div class="glass p-12 rounded-[4rem] mt-8 sm:mt-0 hover:scale-105 transition-transform duration-500">
-                    <i class="fas fa-microchip text-4xl text-emerald-500 mb-8"></i>
-                    <h4 class="text-xl font-black uppercase italic mb-4">Realtime</h4>
-                    <p class="text-[11px] text-slate-500 font-bold uppercase leading-relaxed italic">Firebase-gesteuerte Aktivierung in Lichtgeschwindigkeit.</p>
-                </div>
+            <div class="flex items-center gap-3">
+                <button onclick="openAdmin()" class="w-14 h-14 flex items-center justify-center bg-white/5 rounded-2xl border border-white/10 hover:border-indigo-500/50 transition shadow-inner">
+                    <i class="fas fa-shield-halved text-indigo-400"></i>
+                </button>
+                <button onclick="toggleSidebar()" class="w-14 h-14 flex items-center justify-center bg-white/5 rounded-2xl border border-white/10 hover:border-indigo-500/50 transition">
+                    <i class="fas fa-bars-staggered text-xl text-indigo-400"></i>
+                </button>
             </div>
         </div>
-    </div>
-</section>
+    </nav>
 
-<section id="pricing" class="py-40 px-4 bg-slate-950/20" data-aos="fade-up">
-    <div class="text-center mb-24">
-        <h2 class="text-5xl md:text-8xl font-black uppercase italic mb-6 tracking-tighter">SELECT <span class="text-indigo-500">TIER</span></h2>
-        <p class="text-[11px] text-slate-500 font-black uppercase tracking-[0.5em] italic">Transparente Gebühren • Einmalige Zahlung • Sofort-Sync</p>
-    </div>
-
-    <div class="pricing-scroll max-w-[1800px] mx-auto">
-        <div class="price-card glass p-12 rounded-[4.5rem] flex flex-col">
-            <div class="absolute -top-4 -right-4 bg-slate-800 px-6 py-2 rounded-full border border-white/10 text-[9px] font-black uppercase italic tracking-widest">Entry</div>
-            <span class="text-[10px] font-black text-slate-500 uppercase italic mb-12">Basic Gateway</span>
-            <div class="text-7xl font-black mb-6 italic tracking-tighter">40 €</div>
-            <p class="text-[11px] font-black text-indigo-400 uppercase italic mb-12 tracking-widest border-b border-white/5 pb-8">30 Tage Full Infrastructure</p>
-            <ul class="text-[11px] font-bold text-slate-400 uppercase space-y-6 mb-16 italic flex-grow">
-                <li><i class="fas fa-check text-indigo-500 mr-3"></i>Standard Node Access</li>
-                <li><i class="fas fa-check text-indigo-500 mr-3"></i>MAC-Routing Inkl.</li>
-                <li><i class="fas fa-times text-red-500 mr-3 opacity-40"></i>Kein VIP Support</li>
-                <li><i class="fas fa-times text-red-500 mr-3 opacity-40"></i>Exkl. Player-Lizenz</li>
-            </ul>
-            <button onclick="openModal('1 Monat - 40€')" class="w-full py-7 rounded-3xl bg-white/5 border border-white/10 font-black text-[12px] uppercase tracking-widest hover:bg-white/10 transition shadow-inner">Tier Wählen</button>
+    <div id="sidebar" class="fixed inset-y-0 right-0 w-full md:w-[550px] glass-heavy z-[2000] translate-x-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] p-16 flex flex-col">
+        <div class="flex justify-between items-center mb-24">
+            <span class="text-xs font-black uppercase tracking-[0.5em] text-indigo-500">Navigation Hub</span>
+            <button onclick="toggleSidebar()" class="text-4xl font-thin hover:rotate-90 transition-all">✕</button>
         </div>
-
-        <div class="price-card glass p-12 rounded-[4.5rem] flex flex-col">
-            <span class="text-[10px] font-black text-slate-500 uppercase italic mb-12">Performance Pack</span>
-            <div class="text-7xl font-black mb-6 italic tracking-tighter">80 €</div>
-            <p class="text-[11px] font-black text-emerald-400 uppercase italic mb-12 tracking-widest border-b border-white/5 pb-8">6 Monate Service Sync</p>
-            <ul class="text-[11px] font-bold text-slate-400 uppercase space-y-6 mb-16 italic flex-grow">
-                <li><i class="fas fa-check text-emerald-500 mr-3"></i>Enhanced Bandwidth</li>
-                <li><i class="fas fa-check text-emerald-500 mr-3"></i>Prio Aktivierung</li>
-                <li><i class="fas fa-check text-emerald-500 mr-3"></i>6 Monate Laufzeit</li>
-                <li><i class="fas fa-times text-red-500 mr-3 opacity-40"></i>Exkl. Player-Lizenz</li>
-            </ul>
-            <button onclick="openModal('6 Monate - 80€')" class="w-full py-7 rounded-3xl bg-white/5 border border-white/10 font-black text-[12px] uppercase tracking-widest hover:bg-white/10 transition shadow-inner">Tier Wählen</button>
+        <div class="flex flex-col gap-10">
+            <a href="#" onclick="toggleSidebar()" class="group text-5xl font-black italic uppercase tracking-tighter hover:text-indigo-500 transition">Startseite</a>
+            <a href="#about" onclick="toggleSidebar()" class="group text-5xl font-black italic uppercase tracking-tighter hover:text-indigo-500 transition">Architektur</a>
+            <a href="#pricing" onclick="toggleSidebar()" class="group text-5xl font-black italic uppercase tracking-tighter hover:text-indigo-500 transition">Gebühren</a>
+            <a href="#setup" onclick="toggleSidebar()" class="group text-5xl font-black italic uppercase tracking-tighter hover:text-indigo-500 transition">Setup-Guide</a>
+            <a href="#faq" onclick="toggleSidebar()" class="group text-5xl font-black italic uppercase tracking-tighter hover:text-indigo-500 transition">Datenbank FAQ</a>
+            <a href="https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ" target="_blank" class="text-2xl font-black text-indigo-400 uppercase mt-10">Direct Support <i class="fas fa-external-link-alt text-sm ml-2"></i></a>
         </div>
-
-        <div class="price-card bg-indigo-600 p-14 rounded-[5rem] flex flex-col shadow-[0_40px_100px_rgba(99,102,241,0.3)] lg:scale-110 z-10 border border-white/30">
-            <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-white text-indigo-600 px-8 py-3 rounded-full text-[10px] font-black uppercase italic tracking-[0.3em] shadow-xl">Most Popular</div>
-            <span class="text-[10px] font-black text-white/70 uppercase italic mb-12">Yearly Infrastructure</span>
-            <div class="text-8xl font-black mb-6 italic text-white tracking-tighter">120 €</div>
-            <p class="text-[12px] font-black text-white uppercase mb-12 italic border-b border-white/20 pb-8">12 Monate (Nur 10€ / Monat)</p>
-            <ul class="text-[13px] font-black text-white uppercase space-y-7 mb-16 italic flex-grow">
-                <li><i class="fas fa-crown mr-3 text-amber-300"></i>Premium VIP Routing</li>
-                <li><i class="fas fa-bolt mr-3"></i>Maximum Node Speed</li>
-                <li><i class="fas fa-headset mr-3"></i>Express Support Access</li>
-                <li><i class="fas fa-info-circle mr-3 text-white/50"></i>Exkl. Player-Lizenz</li>
-            </ul>
-            <button onclick="openModal('12 Monate - 120€')" class="w-full py-8 rounded-3xl bg-white text-black font-black text-[13px] uppercase tracking-widest shadow-2xl hover:scale-105 transition active:scale-95">Jetzt Sichern</button>
-        </div>
-
-        <div class="price-card glass p-12 rounded-[4.5rem] flex flex-col border-cyan-500/30">
-            <span class="text-[10px] font-black text-cyan-400 uppercase italic mb-12">Ultimate Diamond</span>
-            <div class="text-7xl font-black mb-6 italic text-cyan-400 tracking-tighter">200 €</div>
-            <p class="text-[11px] font-black text-cyan-400 uppercase italic mb-12 tracking-widest border-b border-white/5 pb-8">Dedicated 4K Lines</p>
-            <ul class="text-[11px] font-bold text-slate-400 uppercase space-y-6 mb-16 italic flex-grow">
-                <li><i class="fas fa-gem text-cyan-400 mr-3"></i>Dedicated Node-Resource</li>
-                <li><i class="fas fa-check text-cyan-400 mr-3"></i>Highest Bitrate Sync</li>
-                <li><i class="fas fa-check text-cyan-400 mr-3"></i>Multi-Device Support</li>
-                <li><i class="fas fa-times text-red-500 mr-3 opacity-40"></i>Exkl. Player-Lizenz</li>
-            </ul>
-            <button onclick="openModal('Diamond - 200€')" class="w-full py-7 rounded-3xl bg-cyan-500/10 border border-cyan-500/40 font-black text-[12px] uppercase text-cyan-400 tracking-widest hover:bg-cyan-500/20 transition shadow-inner">Tier Wählen</button>
-        </div>
-
-        <div class="price-card vip-border p-12 rounded-[4.5rem] flex flex-col">
-            <span class="text-[10px] font-black text-amber-500 uppercase italic mb-12 tracking-[0.3em]">World Black VIP</span>
-            <div class="text-7xl font-black mb-6 italic text-amber-500 tracking-tighter">300 €</div>
-            <p class="text-[11px] font-black text-amber-500/60 uppercase italic mb-12 tracking-widest border-b border-white/5 pb-8">Concierge Infrastructure</p>
-            <ul class="text-[11px] font-bold text-slate-400 uppercase space-y-6 mb-16 italic flex-grow">
-                <li><i class="fas fa-star text-amber-500 mr-3"></i>Unrestricted Bandwidth</li>
-                <li><i class="fas fa-star text-amber-500 mr-3"></i>Private Server Proxy</li>
-                <li><i class="fas fa-star text-amber-500 mr-3"></i>Personal Tech Manager</li>
-                <li><i class="fas fa-times text-red-500 mr-3 opacity-40"></i>Exkl. Player-Lizenz</li>
-            </ul>
-            <button onclick="openModal('World Black VIP - 300€')" class="w-full py-7 rounded-3xl bg-amber-500/10 border border-amber-500/20 font-black text-[12px] uppercase text-amber-500 tracking-widest hover:bg-amber-500/20 transition shadow-inner">VIP Order</button>
-        </div>
-    </div>
-</section>
-
-<section id="setup" class="py-40 px-6" data-aos="fade-up">
-    <div class="max-w-5xl mx-auto">
-        <h2 class="text-center text-5xl font-black uppercase italic mb-32 tracking-tighter">SYSTEM <span class="text-indigo-400">INTEGRATION</span></h2>
-        
-        <div class="grid gap-16 relative">
-            <div class="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-indigo-600 via-indigo-600/10 to-transparent ml-5 sm:ml-6 hidden sm:block"></div>
-            
-            <div class="relative pl-0 sm:pl-20">
-                <div class="absolute left-0 top-0 w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center font-black italic shadow-xl shadow-indigo-600/40 z-10 hidden sm:flex">1</div>
-                <div class="glass p-12 rounded-[4rem] hover:border-indigo-500/30 transition">
-                    <h4 class="text-2xl font-black uppercase italic mb-8">Dev-Status Freischalten</h4>
-                    <p class="text-slate-400 font-bold uppercase italic text-[12px] leading-loose mb-8">
-                        Navigieren Sie auf Ihrem FireTV/Android Gerät zu: <br>
-                        <span class="text-white bg-white/5 px-3 py-1 rounded-lg">Einstellungen > Mein Fire TV > Info</span>. <br><br>
-                        Markieren Sie den Namen Ihres Geräts und drücken Sie die <b class="text-indigo-400">Auswahltaste 7 Mal</b> schnell hintereinander, bis die Meldung erscheint: "Sie sind jetzt ein Entwickler".
-                    </p>
-                    <div class="flex items-center gap-4 text-amber-400 text-[10px] font-black uppercase italic">
-                        <i class="fas fa-exclamation-triangle"></i> Essential Step
-                    </div>
-                </div>
-            </div>
-
-            <div class="relative pl-0 sm:pl-20">
-                <div class="absolute left-0 top-0 w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center font-black italic border border-white/10 z-10 hidden sm:flex">2</div>
-                <div class="glass p-12 rounded-[4rem]">
-                    <h4 class="text-2xl font-black uppercase italic mb-8">Unbekannte Quellen</h4>
-                    <p class="text-slate-400 font-bold uppercase italic text-[12px] leading-loose">
-                        Gehen Sie zurück zu <b class="text-white">Entwickleroptionen</b> und stellen Sie sicher, dass <b class="text-white">„Apps unbekannter Herkunft“</b> auf <b class="text-emerald-400">AN / AKTIVIERT</b> steht. Dies erlaubt die Installation unserer optimierten Nodes.
-                    </p>
-                </div>
-            </div>
-
-            <div class="relative pl-0 sm:pl-20">
-                <div class="absolute left-0 top-0 w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center font-black italic z-10 hidden sm:flex">3</div>
-                <div class="glass p-12 rounded-[4rem]">
-                    <h4 class="text-2xl font-black uppercase italic mb-10">App Deployment</h4>
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div class="bg-black/40 p-10 rounded-[2.5rem] border border-white/5 text-center group hover:border-indigo-500 transition">
-                            <span class="text-[10px] font-black text-slate-500 block mb-4 tracking-[0.3em]">IBO PLAYER PRO</span>
-                            <div class="text-5xl font-black italic text-indigo-400 mb-6 tracking-tighter">327187</div>
-                            <div class="text-[9px] font-black uppercase text-slate-600">Downloader Code</div>
-                        </div>
-                        <div class="bg-black/40 p-10 rounded-[2.5rem] border border-white/5 text-center group hover:border-indigo-500 transition">
-                            <span class="text-[10px] font-black text-slate-500 block mb-4 tracking-[0.3em]">VU PLAYER PRO</span>
-                            <div class="text-5xl font-black italic text-indigo-400 mb-6 tracking-tighter">7718585</div>
-                            <div class="text-[9px] font-black uppercase text-slate-600">Downloader Code</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="payments" class="py-40 px-6 bg-slate-900/10" data-aos="fade-up">
-    <div class="max-w-6xl mx-auto text-center">
-        <h2 class="text-4xl md:text-7xl font-black uppercase italic mb-24">VALIDATED <span class="text-indigo-500">PAYMENTS</span></h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div class="glass p-12 rounded-[4rem] flex flex-col items-center group">
-                <div class="w-20 h-20 mb-8 bg-blue-500/10 rounded-3xl flex items-center justify-center group-hover:scale-110 transition">
-                    <i class="fab fa-paypal text-4xl text-blue-500"></i>
-                </div>
-                <h5 class="text-sm font-black uppercase italic mb-4">PayPal</h5>
-                <p class="text-[10px] text-slate-500 font-bold uppercase italic leading-loose">Nur Freunde & Familie. Sofortige Validierung.</p>
-            </div>
-            <div class="glass p-12 rounded-[4rem] flex flex-col items-center group">
-                <div class="w-20 h-20 mb-8 bg-orange-500/10 rounded-3xl flex items-center justify-center group-hover:scale-110 transition">
-                    <i class="fab fa-bitcoin text-4xl text-orange-500"></i>
-                </div>
-                <h5 class="text-sm font-black uppercase italic mb-4">Crypto</h5>
-                <p class="text-[10px] text-slate-500 font-bold uppercase italic leading-loose">BTC, USDT (TRC20), LTC. Anonym & Sicher.</p>
-            </div>
-            <div class="glass p-12 rounded-[4rem] flex flex-col items-center group">
-                <div class="w-20 h-20 mb-8 bg-indigo-500/10 rounded-3xl flex items-center justify-center group-hover:scale-110 transition">
-                    <i class="fas fa-credit-card text-4xl text-indigo-500"></i>
-                </div>
-                <h5 class="text-sm font-black uppercase italic mb-4">Cards</h5>
-                <p class="text-[10px] text-slate-500 font-bold uppercase italic leading-loose">Visa, Mastercard über Gateway-Link.</p>
-            </div>
-            <div class="glass p-12 rounded-[4rem] flex flex-col items-center group">
-                <div class="w-20 h-20 mb-8 bg-emerald-500/10 rounded-3xl flex items-center justify-center group-hover:scale-110 transition">
-                    <i class="fas fa-university text-4xl text-emerald-500"></i>
-                </div>
-                <h5 class="text-sm font-black uppercase italic mb-4">SEPA</h5>
-                <p class="text-[10px] text-slate-500 font-bold uppercase italic leading-loose">Echtzeitüberweisung (SEPA Instant) bevorzugt.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="faq" class="py-40 px-6" data-aos="fade-up">
-    <div class="max-w-4xl mx-auto">
-        <h2 class="text-center text-5xl font-black uppercase italic mb-24 tracking-tighter">FREQUENT <span class="text-indigo-500">ANSWERS</span></h2>
-        <div class="space-y-6">
-            <details class="glass p-10 rounded-[3rem] group cursor-pointer">
-                <summary class="list-none flex justify-between items-center text-[12px] font-black uppercase italic tracking-widest">
-                    Was genau kaufe ich hier?
-                    <i class="fas fa-plus text-indigo-500 transition-transform"></i>
-                </summary>
-                <p class="mt-8 text-[12px] font-bold text-slate-400 uppercase italic leading-loose tracking-wide">
-                    Sie erwerben den Zugang zu unserer dedizierten Server-Infrastruktur. Dies beinhaltet das technische Routing für Ihre MAC-Adresse. Die Player-Software (z.B. IBO) ist ein separates Produkt von Drittanbietern.
-                </p>
-            </details>
-            <details class="glass p-10 rounded-[3rem] group cursor-pointer">
-                <summary class="list-none flex justify-between items-center text-[12px] font-black uppercase italic tracking-widest">
-                    Wie funktioniert das Upgrade?
-                    <i class="fas fa-plus text-indigo-500 transition-transform"></i>
-                </summary>
-                <p class="mt-8 text-[12px] font-bold text-slate-400 uppercase italic leading-loose tracking-wide">
-                    Unser System erkennt Ihre MAC-Adresse in der Realtime Database. Wenn Sie ein größeres Paket wählen, wird der neue Zeitstempel automatisch auf Ihre bestehende ID addiert oder überschrieben (Upgrade-Protokoll).
-                </p>
-            </details>
-            <details class="glass p-10 rounded-[3rem] group cursor-pointer">
-                <summary class="list-none flex justify-between items-center text-[12px] font-black uppercase italic tracking-widest">
-                    Warum ist die Player-Lizenz nicht inklusive?
-                    <i class="fas fa-plus text-indigo-500 transition-transform"></i>
-                </summary>
-                <p class="mt-8 text-[12px] font-bold text-slate-400 uppercase italic leading-loose tracking-wide">
-                    Wir sind Infrastruktur-Architekten, keine App-Entwickler. Die Apps gehören Firmen wie IBO oder VU. Um maximale Qualität zu garantieren, trennen wir Service und Software strikt.
-                </p>
-            </details>
-            <details class="glass p-10 rounded-[3rem] group cursor-pointer">
-                <summary class="list-none flex justify-between items-center text-[12px] font-black uppercase italic tracking-widest">
-                    Gibt es eine Geld-zurück-Garantie?
-                    <i class="fas fa-plus text-indigo-500 transition-transform"></i>
-                </summary>
-                <p class="mt-8 text-[12px] font-bold text-slate-400 uppercase italic leading-loose tracking-wide">
-                    Aufgrund der digitalen Natur und der sofortigen Bereitstellung der Ressourcen ist eine Erstattung nach der Aktivierung ausgeschlossen. Wir bieten jedoch Support bis zur erfolgreichen Einrichtung.
-                </p>
-            </details>
-        </div>
-    </div>
-</section>
-
-<section id="privacy" class="py-40 px-6 bg-slate-950/40 border-y border-white/5" data-aos="fade-up">
-    <div class="max-w-5xl mx-auto">
-        <h2 class="text-center text-4xl font-black uppercase italic mb-20 text-indigo-400 tracking-widest">DATENSCHUTZ & AGB</h2>
-        <div class="glass p-16 rounded-[4.5rem]">
-            <div class="grid md:grid-cols-2 gap-16">
-                <div>
-                    <h5 class="text-xs font-black uppercase italic mb-8 text-white tracking-[0.3em]">§1 Datensparsamkeit</h5>
-                    <p class="text-[11px] text-slate-500 font-bold uppercase italic leading-relaxed">
-                        Wir erheben keine Namen, Adressen oder Telefonnummern. Ihr Account wird ausschließlich über die technische MAC-Adresse und einen optionalen Alias in unserer verschlüsselten Datenbank (Firebase SSL) geführt.
-                    </p>
-                </div>
-                <div>
-                    <h5 class="text-xs font-black uppercase italic mb-8 text-white tracking-[0.3em]">§2 Nutzungsrecht</h5>
-                    <p class="text-[11px] text-slate-500 font-bold uppercase italic leading-relaxed">
-                        Der Zugang ist für die private Nutzung bestimmt. Das Teilen von Zugängen führt zum automatischen Bann durch unser Load-Balancing System ohne Anspruch auf Rückvergütung.
-                    </p>
-                </div>
-                <div>
-                    <h5 class="text-xs font-black uppercase italic mb-8 text-white tracking-[0.3em]">§3 Haftung</h5>
-                    <p class="text-[11px] text-slate-500 font-bold uppercase italic leading-relaxed">
-                        Wir haften ausschließlich für die Verfügbarkeit der Infrastruktur. Für Inhalte von Drittanbietern oder Fehlfunktionen der genutzten Hardware/Software-Apps übernehmen wir keine Haftung.
-                    </p>
-                </div>
-                <div>
-                    <h5 class="text-xs font-black uppercase italic mb-8 text-white tracking-[0.3em]">§4 Cookies</h5>
-                    <p class="text-[11px] text-slate-500 font-bold uppercase italic leading-relaxed">
-                        Es werden nur technisch notwendige Session-Cookies gesetzt, um Ihren Login-Status während des Bestellvorgangs zu sichern. Kein Werbe-Tracking.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<footer class="py-32 px-6 text-center">
-    <div class="max-w-xl mx-auto">
-        <div class="bg-indigo-600 w-20 h-20 rounded-3xl flex items-center justify-center font-black italic text-3xl mx-auto mb-12 shadow-2xl">V1</div>
-        <a href="https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ" target="_blank" class="px-16 py-8 bg-white text-black font-black rounded-[2.5rem] uppercase text-[12px] tracking-[0.2em] shadow-2xl hover:invert transition-all mb-16 inline-block">Support Gateway</a>
-        <div class="grid grid-cols-3 gap-6 mb-16 text-[10px] font-black uppercase text-slate-600 tracking-widest italic">
-            <a href="#about" class="hover:text-indigo-400">About</a>
-            <a href="#setup" class="hover:text-indigo-400">Setup</a>
-            <a href="#privacy" class="hover:text-indigo-400">Legal</a>
-        </div>
-        <p class="text-[9px] text-slate-800 font-black uppercase tracking-[1.5em] leading-relaxed">© 2026 VisionOne Global Infrastructure<br>Hardware-Validated Access</p>
-    </div>
-</footer>
-
-<div id="orderModal" class="fixed inset-0 z-[5000] hidden flex items-center justify-center bg-black/98 p-6 backdrop-blur-xl">
-    <div id="modalContent" class="glass-heavy w-full max-w-xl p-12 md:p-16 rounded-[4.5rem] relative border border-white/10" data-aos="zoom-in">
-        <button onclick="closeModal()" class="absolute top-10 right-10 text-slate-500 hover:text-white transition text-3xl">✕</button>
-        
-        <h2 class="text-3xl font-black uppercase italic mb-2 text-center text-white tracking-tighter">GATEWAY <span class="text-indigo-500">SYNC</span></h2>
-        <div id="planDisplay" class="text-center text-indigo-400 text-[11px] font-black uppercase mb-12 tracking-[0.3em] bg-indigo-500/10 py-4 rounded-2xl border border-indigo-500/20 italic"></div>
-        
-        <form id="orderForm" class="space-y-6">
-            <div class="group">
-                <label class="text-[9px] font-black text-slate-500 uppercase ml-4 mb-2 block">Identifikation</label>
-                <input type="text" id="aliasInput" placeholder="ALIAS / USERNAME" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-[11px] font-black uppercase outline-none focus:border-indigo-500 text-white tracking-widest transition shadow-inner" required>
-            </div>
-            
-            <div class="group">
-                <label class="text-[9px] font-black text-slate-500 uppercase ml-4 mb-2 block">Hardware MAC</label>
-                <div class="relative">
-                    <input type="text" id="macInput" maxlength="17" placeholder="00:AA:BB:CC:DD:EE" class="mac-input w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-[14px] font-black uppercase outline-none focus:border-indigo-500 text-white tracking-widest transition shadow-inner" required>
-                    <p id="macStatusMsg" class="hidden text-[10px] font-black uppercase mt-3 text-center italic"></p>
-                </div>
-            </div>
-
-            <div class="group">
-                <label class="text-[9px] font-black text-slate-500 uppercase ml-4 mb-2 block">Zusatz (Falls nötig)</label>
-                <input type="text" id="keyInput" placeholder="DEVICE KEY / PLAYER NAME" class="w-full p-6 bg-white/5 border border-white/10 rounded-3xl text-[11px] font-black uppercase outline-none focus:border-indigo-500 text-white tracking-widest transition shadow-inner">
-            </div>
-
-            <div class="bg-red-500/5 p-6 rounded-3xl border border-red-500/10 mb-8">
-                <p class="text-[10px] text-red-400 font-black italic uppercase text-center leading-relaxed">
-                    Achtung: Die Player-App Lizenzgebühr ist hier nicht enthalten. Aktivierung nur für Infrastruktur!
-                </p>
-            </div>
-
-            <button type="submit" id="submitBtn" class="w-full py-8 bg-indigo-600 rounded-[2.5rem] font-black uppercase text-xs tracking-widest shadow-2xl hover:bg-indigo-500 transition active:scale-95 flex items-center justify-center gap-4">
-                <span id="btnText">Daten Senden & Sync</span>
-                <i class="fas fa-paper-plane text-[10px]"></i>
-            </button>
-            
-            <p class="text-[9px] text-slate-500 font-bold uppercase italic text-center px-4">
-                Durch Klicken akzeptieren Sie unsere AGB und die manuelle Prüfung Ihrer Zahlung.
+        <div class="mt-auto p-10 glass rounded-[3rem] border-indigo-500/10">
+            <p class="text-[10px] font-black uppercase text-indigo-400 mb-4 italic">Security Verified</p>
+            <p class="text-[10px] text-slate-500 leading-relaxed font-bold uppercase tracking-wider">
+                This session is hardware-validated. Unauthorized distribution of access keys will result in a permanent MAC-level blacklist.
             </p>
-        </form>
+        </div>
     </div>
-</div>
 
-<script>
-    // 1. FIREBASE INITIALIZATION
-    const firebaseConfig = { 
-        databaseURL: "https://db--merkez-default-rtdb.europe-west1.firebasedatabase.app/" 
-    };
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    <section class="min-h-screen flex flex-col justify-center items-center px-6 text-center relative hero-gradient" data-aos="zoom-out">
+        <div class="mb-12 inline-flex items-center gap-4 px-8 py-3 rounded-full border border-indigo-500/20 bg-indigo-500/5 backdrop-blur-xl">
+            <span class="relative flex h-3 w-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+            </span>
+            <span class="text-[11px] font-black uppercase tracking-[0.4em] text-indigo-400">Network Core v2.5 Online</span>
+        </div>
+        <h1 class="text-8xl md:text-[14rem] font-black uppercase italic leading-[0.75] mb-12 tracking-tighter">
+            ULTRA<br><span class="text-indigo-500">INFRA.</span>
+        </h1>
+        <p class="max-w-3xl text-[10px] md:text-sm text-slate-400 font-bold uppercase tracking-[0.5em] leading-relaxed italic mb-16">
+            Enterprise Content Routing • No Logs Policy • Realtime Cloud Sync
+        </p>
+        <div class="flex flex-col sm:flex-row gap-6 w-full max-w-2xl px-6">
+            <a href="#pricing" class="flex-1 bg-indigo-600 py-8 rounded-[2.5rem] font-black uppercase text-[13px] tracking-widest shadow-2xl hover:bg-indigo-500 transition-all flex items-center justify-center gap-4">
+                Pakete <i class="fas fa-chevron-right text-[10px]"></i>
+            </a>
+            <a href="#setup" class="flex-1 glass py-8 rounded-[2.5rem] font-black uppercase text-[13px] tracking-widest italic border border-white/10 hover:bg-white/5 transition">Setup Guide</a>
+        </div>
+    </section>
 
-    // 2. SECURITY: BAN CHECK (Run on Load)
-    function globalSecurityCheck() {
-        if (localStorage.getItem('v1_sec_lock') === 'true') {
-            document.body.innerHTML = `
-                <div class="min-h-screen bg-black flex flex-col items-center justify-center text-red-600 font-black text-center p-12">
-                    <i class="fas fa-user-slash text-9xl mb-12 animate-pulse"></i>
-                    <h1 class="text-6xl uppercase italic tracking-tighter mb-4">Access Revoked</h1>
-                    <p class="text-xs tracking-[0.6em] uppercase text-red-900">Security protocol triggered. Hardware ID blacklisted.</p>
-                </div>`;
-            return true;
-        }
-        return false;
-    }
-    if (globalSecurityCheck()) throw new Error("Security Lockout Active");
+    <section id="about" class="py-40 px-6" data-aos="fade-up">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-24 items-center">
+                <div>
+                    <h2 class="text-6xl font-black uppercase italic mb-12 leading-none">THE <span class="text-indigo-500">SYSTEM</span></h2>
+                    <p class="text-slate-400 font-bold uppercase italic text-sm tracking-widest leading-loose mb-12">
+                        Unsere Architektur nutzt ein verteiltes Netzwerk aus Hochleistungsknoten (Nodes), die weltweit strategisch platziert sind. Jede Verbindung wird über einen dedizierten MAC-Tunnel geroutet, der Latenzen auf ein Minimum reduziert.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <div class="p-8 bg-white/5 rounded-3xl border-l-4 border-indigo-600">
+                            <h4 class="text-white font-black uppercase text-xs mb-3">Load Balancing</h4>
+                            <p class="text-[10px] text-slate-500 uppercase font-black">Intelligente Lastverteilung verhindert Pufferung selbst bei 4K/8K Streams.</p>
+                        </div>
+                        <div class="p-8 bg-white/5 rounded-3xl border-l-4 border-emerald-500">
+                            <h4 class="text-white font-black uppercase text-xs mb-3">Instant Activation</h4>
+                            <p class="text-[10px] text-slate-500 uppercase font-black">Sync erfolgt in unter 500ms via Firebase Realtime Database.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="absolute inset-0 bg-indigo-500/20 blur-[120px] rounded-full"></div>
+                    <div class="glass p-12 rounded-[4rem] relative overflow-hidden">
+                        <div class="flex items-center gap-4 mb-10">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                            <span class="text-[10px] font-mono text-slate-500 ml-4 uppercase">Network_Diagnostics.sh</span>
+                        </div>
+                        <div class="space-y-4 font-mono text-[10px] text-indigo-400">
+                            <p>> Initializing Global Node Search...</p>
+                            <p class="text-white">> [OK] Node_Frankfurt_DE-01 Connected (12ms)</p>
+                            <p class="text-white">> [OK] Node_London_UK-05 Connected (18ms)</p>
+                            <p class="text-white">> [OK] Node_NYC_US-02 Connected (74ms)</p>
+                            <p>> Encrypting MAC Tunnel... SHA-256 Verified.</p>
+                            <p class="text-emerald-500">> SYSTEM READY: 100% BANDWIDTH AVAILABLE</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // 3. AOS & UI HELPERS
-    AOS.init({ duration: 1000, once: true, easing: 'ease-out-cubic' });
+    <section id="pricing" class="py-40 bg-slate-950/20">
+        <div class="text-center mb-24 px-6" data-aos="fade-up">
+            <h2 class="text-7xl md:text-9xl font-black uppercase italic mb-8 tracking-tighter">SELECT <span class="text-indigo-500">TIER</span></h2>
+            <div class="w-32 h-2 bg-indigo-600 mx-auto rounded-full mb-10"></div>
+            <p class="text-[12px] text-slate-500 font-black uppercase tracking-[0.5em] italic">Kein Abo • Einmalige Zahlung • Lebenslange Node-Zuweisung</p>
+        </div>
 
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('translate-x-full');
-        document.body.style.overflow = sidebar.classList.contains('translate-x-full') ? 'auto' : 'hidden';
-    }
+        <div class="pricing-scroll px-6 overflow-x-auto">
+            <div class="flex gap-8 max-w-[1600px] mx-auto pb-10">
+                <div class="price-card glass p-14 flex flex-col group hover:bg-white/5">
+                    <span class="text-[11px] font-black text-slate-500 uppercase italic mb-10">Trial Access</span>
+                    <div class="text-8xl font-black mb-6 italic tracking-tighter">40 €</div>
+                    <p class="text-[11px] font-black text-indigo-400 uppercase italic mb-10 border-b border-white/5 pb-8">30 Tage Full Infrastructure</p>
+                    <ul class="space-y-6 mb-16 text-[11px] font-bold text-slate-400 uppercase italic flex-grow">
+                        <li><i class="fas fa-check text-indigo-500 mr-3"></i>Standard Routing</li>
+                        <li><i class="fas fa-check text-indigo-500 mr-3"></i>MAC-Sync Inklusive</li>
+                        <li class="opacity-30"><i class="fas fa-times text-red-500 mr-3"></i>VIP Express Support</li>
+                    </ul>
+                    <button onclick="openModal('1 Monat - 40€')" class="w-full py-8 rounded-[2rem] bg-white/5 border border-white/10 font-black text-xs uppercase tracking-widest group-hover:bg-indigo-600 group-hover:border-indigo-600 transition-all">Initialisieren</button>
+                </div>
 
-    function openModal(plan) {
-        document.getElementById('planDisplay').innerText = plan;
-        document.getElementById('orderModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
+                <div class="price-card bg-indigo-600 p-16 scale-110 z-10 shadow-[0_50px_100px_rgba(99,102,241,0.4)]">
+                    <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-white text-indigo-600 px-10 py-3 rounded-full text-[10px] font-black uppercase italic tracking-[0.4em]">Elite Choice</div>
+                    <span class="text-[11px] font-black text-white/60 uppercase italic mb-10">Yearly Protocol</span>
+                    <div class="text-9xl font-black mb-6 italic text-white tracking-tighter">120 €</div>
+                    <p class="text-[12px] font-black text-white uppercase mb-12 border-b border-white/20 pb-8">12 Monate Unlimited Sync</p>
+                    <ul class="space-y-7 mb-20 text-[13px] font-black text-white uppercase italic flex-grow">
+                        <li><i class="fas fa-crown text-amber-300 mr-4"></i>VIP Express Routing</li>
+                        <li><i class="fas fa-bolt mr-4"></i>Uncapped Speed Sync</li>
+                        <li><i class="fas fa-headset mr-4"></i>Direct WhatsApp Support</li>
+                    </ul>
+                    <button onclick="openModal('12 Monate - 120€')" class="w-full py-9 rounded-[2.5rem] bg-white text-indigo-600 font-black text-sm uppercase tracking-widest shadow-2xl hover:scale-105 transition active:scale-95">Sync Starten</button>
+                </div>
 
-    function closeModal() {
-        document.getElementById('orderModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
+                <div class="price-card glass p-14 flex flex-col group">
+                    <span class="text-[11px] font-black text-cyan-400 uppercase italic mb-10 tracking-widest">Ultimate Diamond</span>
+                    <div class="text-8xl font-black mb-6 italic text-cyan-400 tracking-tighter">200 €</div>
+                    <p class="text-[11px] font-black text-cyan-400 uppercase italic mb-10 border-b border-white/5 pb-8">Lifetime Architecture Access</p>
+                    <ul class="space-y-6 mb-16 text-[11px] font-bold text-slate-400 uppercase italic flex-grow">
+                        <li><i class="fas fa-gem text-cyan-400 mr-3"></i>Dedicated Node-Server</li>
+                        <li><i class="fas fa-check text-cyan-400 mr-3"></i>4K Ultra-Low Latency</li>
+                        <li><i class="fas fa-check text-cyan-400 mr-3"></i>Priority Updates</li>
+                    </ul>
+                    <button onclick="openModal('Diamond - 200€')" class="w-full py-8 rounded-[2rem] bg-cyan-500/10 border border-cyan-500/40 font-black text-xs text-cyan-400 uppercase tracking-widest hover:bg-cyan-500 transition">VIP Order</button>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // 4. MAC FORMATTER
-    document.getElementById('macInput').addEventListener('input', function(e) {
-        let v = e.target.value.toUpperCase().replace(/[^0-9A-Z]/g, '');
-        let f = "";
-        for(let i = 0; i < v.length && i < 12; i++) {
-            if(i > 0 && i % 2 === 0) f += ":";
-            f += v[i];
-        }
-        e.target.value = f;
-        document.getElementById('macStatusMsg').classList.add('hidden');
-    });
+    <section id="setup" class="py-40 px-6" data-aos="fade-up">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-32 gap-8">
+                <div>
+                    <h2 class="text-5xl md:text-8xl font-black uppercase italic tracking-tighter mb-4 leading-none">SYSTEM<br><span class="text-indigo-500">SETUP.</span></h2>
+                    <p class="text-xs font-black text-slate-500 uppercase tracking-[0.6em] italic">Deployment Guide für Amazon & Android Devices</p>
+                </div>
+                <div class="bg-white/5 px-8 py-4 rounded-2xl border border-white/10 flex items-center gap-6">
+                    <div class="text-right">
+                        <span class="block text-[8px] font-black text-slate-500 uppercase">Current Load</span>
+                        <span class="text-xl font-black italic">Stable 14%</span>
+                    </div>
+                    <div class="w-12 h-12 bg-indigo-600/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-microchip text-indigo-500"></i>
+                    </div>
+                </div>
+            </div>
 
-    // 5. FORM SUBMISSION + BAN CHECK LOGIC
-    document.getElementById('orderForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const btn = document.getElementById('submitBtn'), 
-              txt = document.getElementById('btnText'), 
-              msg = document.getElementById('macStatusMsg'), 
-              modal = document.getElementById('modalContent');
-              
-        const mac = document.getElementById('macInput').value, 
-              selectedPlan = document.getElementById('planDisplay').innerText,
-              alias = document.getElementById('aliasInput').value;
+            <div class="space-y-24 relative">
+                <div class="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-indigo-600 via-indigo-600/10 to-transparent ml-6 hidden md:block"></div>
+                
+                <div class="relative pl-0 md:pl-24 group">
+                    <div class="absolute left-0 top-0 w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center font-black italic shadow-xl shadow-indigo-600/40 z-10 hidden md:flex group-hover:scale-110 transition">1</div>
+                    <div class="glass p-12 rounded-[4rem]">
+                        <h4 class="text-3xl font-black uppercase italic mb-8">Dev-Modus Freischalten</h4>
+                        <p class="text-slate-400 font-bold uppercase italic text-[12px] leading-loose mb-10">
+                            Gehen Sie zu: <span class="text-white bg-white/5 px-4 py-1 rounded-lg font-mono">Einstellungen > Mein Fire TV > Info</span>.<br><br>
+                            Klicken Sie auf den Namen Ihres Fire TV Sticks <span class="text-indigo-400 font-black">genau 7 Mal</span>. Es erscheint ein Countdown unten am Bildschirm. Sobald dieser abgelaufen ist, sind Sie offiziell Entwickler.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <span class="px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-[9px] font-black uppercase italic text-indigo-400">Essential</span>
+                            <span class="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[9px] font-black uppercase italic text-slate-500">FireOS 7/8</span>
+                        </div>
+                    </div>
+                </div>
 
-        if(mac.length < 17) {
-            alert("MAC Adresse ungültig!");
-            return;
-        }
+                <div class="relative pl-0 md:pl-24 group">
+                    <div class="absolute left-0 top-0 w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center font-black italic border border-white/10 z-10 hidden md:flex group-hover:scale-110 transition">2</div>
+                    <div class="glass p-12 rounded-[4rem]">
+                        <h4 class="text-3xl font-black uppercase italic mb-8">Unbekannte Apps erlauben</h4>
+                        <p class="text-slate-400 font-bold uppercase italic text-[12px] leading-loose">
+                            Navigieren Sie zurück zu <span class="text-white">Entwickleroptionen</span> (neu erschienen). Dort finden Sie den Punkt <span class="text-indigo-400">Apps unbekannter Herkunft</span>. Stellen Sie sicher, dass der Schalter auf <span class="text-emerald-500">AN</span> steht. Dies ist zwingend nötig, um unsere Custom Nodes zu installieren.
+                        </p>
+                    </div>
+                </div>
 
-        btn.disabled = true;
-        txt.innerText = "SECURITY SCAN...";
+                <div class="relative pl-0 md:pl-24 group">
+                    <div class="absolute left-0 top-0 w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center font-black italic shadow-xl z-10 hidden md:flex group-hover:scale-110 transition">3</div>
+                    <div class="glass p-12 rounded-[4rem]">
+                        <h4 class="text-3xl font-black uppercase italic mb-12">App Deployment (Codes)</h4>
+                        <div class="grid sm:grid-cols-2 gap-8">
+                            <div class="bg-black/40 p-10 rounded-[3rem] border border-white/5 text-center hover:border-indigo-500/50 transition duration-500">
+                                <i class="fas fa-rocket text-indigo-500 text-3xl mb-6"></i>
+                                <span class="block text-[10px] font-black text-slate-600 uppercase mb-3 tracking-[0.3em]">IBO PLAYER PRO</span>
+                                <div class="text-6xl font-black italic text-white tracking-tighter">327187</div>
+                                <p class="text-[9px] font-black uppercase text-indigo-400 mt-6 tracking-widest">Type into Downloader App</p>
+                            </div>
+                            <div class="bg-black/40 p-10 rounded-[3rem] border border-white/5 text-center hover:border-indigo-500/50 transition duration-500">
+                                <i class="fas fa-bolt text-indigo-500 text-3xl mb-6"></i>
+                                <span class="block text-[10px] font-black text-slate-600 uppercase mb-3 tracking-[0.3em]">VU PLAYER PRO</span>
+                                <div class="text-6xl font-black italic text-white tracking-tighter">7718585</div>
+                                <p class="text-[9px] font-black uppercase text-indigo-400 mt-6 tracking-widest">Type into Downloader App</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        try {
-            // A. Check Blacklist
-            const safeMac = mac.replace(/:/g, '-');
-            const banSnap = await db.ref('blacklist/' + safeMac).once('value');
+    <section id="faq" class="py-40 px-6 bg-slate-900/10">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-center text-6xl font-black uppercase italic mb-24 tracking-tighter">TECHNICAL <span class="text-indigo-500">DATABASE</span></h2>
+            <div class="space-y-6">
+                <details class="glass p-10 rounded-[3rem] group cursor-pointer border-l-4 border-transparent hover:border-indigo-500 transition-all duration-500">
+                    <summary class="list-none flex justify-between items-center text-[12px] font-black uppercase italic tracking-[0.3em]">
+                        Welche Hardware wird unterstützt?
+                        <i class="fas fa-plus text-indigo-500 transition-transform"></i>
+                    </summary>
+                    <p class="mt-8 text-[12px] font-bold text-slate-400 uppercase italic leading-loose">
+                        Unser Sync-System unterstützt alle Android-basierten Geräte, insbesondere Fire TV Stick (Lite, 4K, Max, Cube), Nvidia Shield, Google TV und Android Smart TVs. Apple TV wird aktuell nur über Drittanbieter-Apps unterstützt.
+                    </p>
+                </details>
+                <details class="glass p-10 rounded-[3rem] group cursor-pointer border-l-4 border-transparent hover:border-indigo-500 transition-all duration-500">
+                    <summary class="list-none flex justify-between items-center text-[12px] font-black uppercase italic tracking-[0.3em]">
+                        Upgrade von 1 Monat auf 12 Monate?
+                        <i class="fas fa-plus text-indigo-500 transition-transform"></i>
+                    </summary>
+                    <p class="mt-8 text-[12px] font-bold text-slate-400 uppercase italic leading-loose">
+                        Ja. Wählen Sie einfach das neue Paket. Unsere Realtime Database erkennt Ihre MAC-Adresse und fügt die neue Laufzeit automatisch dem bestehenden Node-Eintrag hinzu. Es ist kein manueller Reset nötig.
+                    </p>
+                </details>
+                <details class="glass p-10 rounded-[3rem] group cursor-pointer border-l-4 border-transparent hover:border-indigo-500 transition-all duration-500">
+                    <summary class="list-none flex justify-between items-center text-[12px] font-black uppercase italic tracking-[0.3em]">
+                        Gibt es eine Puffer-Garantie?
+                        <i class="fas fa-plus text-indigo-500 transition-transform"></i>
+                    </summary>
+                    <p class="mt-8 text-[12px] font-bold text-slate-400 uppercase italic leading-loose">
+                        Wir garantieren eine Server-Verfügbarkeit von 99,9%. Pufferung liegt meist an lokalen DNS-Sperren oder schlechtem WLAN. Wir empfehlen einen stabilen 5GHz WLAN Kanal oder LAN-Verbindung.
+                    </p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-32 px-6 text-center border-t border-white/5">
+        <div class="max-w-3xl mx-auto">
+            <div class="bg-indigo-600 w-24 h-24 rounded-[2rem] flex items-center justify-center font-black italic text-4xl mx-auto mb-16 shadow-2xl shadow-indigo-600/30">V1</div>
+            <div class="flex flex-col md:flex-row justify-center gap-12 mb-20 text-[10px] font-black uppercase tracking-[0.4em] italic text-slate-500">
+                <a href="#about" class="hover:text-indigo-400 transition">Infrastructure</a>
+                <a href="#setup" class="hover:text-indigo-400 transition">Deployment</a>
+                <a href="#pricing" class="hover:text-indigo-400 transition">Gateways</a>
+                <a href="https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ" target="_blank" class="hover:text-indigo-400 transition">Legal Support</a>
+            </div>
+            <p class="text-[9px] text-slate-800 font-black uppercase tracking-[2em] leading-relaxed mb-10">VisionOne Network — Hardware-Validated Infrastructure</p>
+            <div class="flex justify-center gap-6 opacity-20 hover:opacity-100 transition duration-1000">
+                <i class="fab fa-cc-paypal text-3xl"></i>
+                <i class="fab fa-bitcoin text-3xl"></i>
+                <i class="fab fa-ethereum text-3xl"></i>
+                <i class="fab fa-stripe text-3xl"></i>
+            </div>
+        </div>
+    </footer>
+
+    <div id="orderModal" class="fixed inset-0 z-[5000] hidden flex items-center justify-center bg-black/98 p-6 backdrop-blur-3xl">
+        <div class="glass-heavy w-full max-w-2xl p-12 md:p-16 rounded-[5rem] relative border border-white/10" data-aos="zoom-in">
+            <button onclick="closeModal()" class="absolute top-12 right-12 text-4xl font-thin text-slate-600 hover:text-white transition">✕</button>
+            <h2 class="text-4xl font-black uppercase italic mb-4 text-center tracking-tighter">GATEWAY <span class="text-indigo-500">SYNC</span></h2>
+            <div id="planDisplay" class="text-center text-indigo-400 text-[11px] font-black uppercase mb-12 italic bg-indigo-500/10 py-4 rounded-2xl border border-indigo-500/20"></div>
             
-            if (banSnap.exists()) {
-                localStorage.setItem('v1_sec_lock', 'true');
-                modal.classList.add('shake');
-                msg.innerText = "CRITICAL: ID BLACKLISTED!";
-                msg.className = "text-red-500 text-[10px] font-black uppercase mt-3 text-center italic block";
-                txt.innerText = "DENIED";
-                setTimeout(() => globalSecurityCheck(), 2000);
+            <form id="orderForm" class="space-y-8">
+                <div class="space-y-4">
+                    <label class="text-[9px] font-black text-slate-500 uppercase ml-6 tracking-widest">Identifikation</label>
+                    <input type="text" id="aliasInput" placeholder="ALIAS / NAME" class="w-full p-8 bg-white/5 border border-white/10 rounded-[2.5rem] text-xs font-black uppercase outline-none focus:border-indigo-500 text-white tracking-widest transition" required>
+                </div>
+                <div class="space-y-4">
+                    <label class="text-[9px] font-black text-slate-500 uppercase ml-6 tracking-widest">MAC-Adresse des Geräts</label>
+                    <input type="text" id="macInput" maxlength="17" placeholder="00:AA:BB:CC:DD:EE" class="mac-input w-full p-8 bg-white/5 border border-white/10 rounded-[2.5rem] text-sm font-black text-center outline-none focus:border-indigo-500 text-white tracking-widest transition" required>
+                </div>
+                <div class="p-8 bg-red-500/5 rounded-[3rem] border border-red-500/10">
+                    <p class="text-[10px] text-red-400 font-black italic uppercase text-center leading-relaxed">
+                        Achtung: Dies ist eine Gebühr für die Infrastruktur. Die Player-App Lizenz (IBO/VU) muss ggf. separat beim Hersteller erworben werden.
+                    </p>
+                </div>
+                <button type="submit" id="submitBtn" class="w-full py-9 bg-indigo-600 rounded-[3rem] font-black uppercase text-xs tracking-widest shadow-2xl hover:bg-indigo-700 transition flex items-center justify-center gap-6">
+                    <span id="btnText">Initialisiere Sync</span>
+                    <i class="fas fa-paper-plane text-[10px]"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="adminModal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center bg-black/99 p-6 backdrop-blur-[100px]">
+        <div class="glass-heavy w-full max-w-7xl p-10 md:p-14 rounded-[4rem] max-h-[95vh] flex flex-col overflow-hidden border border-white/5">
+            <div class="flex justify-between items-center mb-12">
+                <div>
+                    <h2 class="text-3xl font-black italic uppercase tracking-tighter">Infrastructure <span class="text-indigo-500">Terminal v2.5</span></h2>
+                    <p class="text-[9px] text-slate-500 font-black uppercase tracking-[0.4em] mt-2">Secure Backend Access • Log-Level: Full</p>
+                </div>
+                <button onclick="closeAdmin()" class="text-3xl hover:text-red-500 transition">✕</button>
+            </div>
+
+            <div id="adminLogin" class="flex-grow flex flex-col justify-center items-center">
+                <div class="w-full max-w-md space-y-8">
+                    <input type="password" id="adminPass" placeholder="SECURITY KEY" class="w-full p-8 bg-white/5 border border-white/10 rounded-[2.5rem] text-center text-white outline-none focus:border-indigo-500 tracking-[1.5em] font-black text-lg">
+                    <button onclick="verifyAdmin()" class="w-full py-6 bg-indigo-600 rounded-[2.5rem] font-black uppercase text-[11px] tracking-widest hover:bg-indigo-700 shadow-2xl">Unlock Dashboard</button>
+                </div>
+            </div>
+
+            <div id="adminDashboard" class="hidden h-full flex flex-col overflow-hidden">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                    <div class="bg-white/5 p-8 rounded-3xl border border-white/5">
+                        <span class="text-[9px] font-black text-slate-500 uppercase block mb-2">Total Syncs</span>
+                        <div class="text-3xl font-black italic text-indigo-400" id="stat-total">0</div>
+                    </div>
+                    <div class="bg-white/5 p-8 rounded-3xl border border-white/5">
+                        <span class="text-[9px] font-black text-slate-500 uppercase block mb-2">Est. Revenue</span>
+                        <div class="text-3xl font-black italic text-emerald-500" id="stat-revenue">0 €</div>
+                    </div>
+                    <div class="bg-white/5 p-8 rounded-3xl border border-white/5">
+                        <span class="text-[9px] font-black text-slate-500 uppercase block mb-2">Blacklisted</span>
+                        <div class="text-3xl font-black italic text-red-500" id="stat-banned">0</div>
+                    </div>
+                    <div class="bg-white/5 p-8 rounded-3xl border border-white/5">
+                        <span class="text-[9px] font-black text-slate-500 uppercase block mb-2">Uptime</span>
+                        <div class="text-3xl font-black italic text-white">99.9%</div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-10 flex-grow overflow-hidden">
+                    <div class="glass p-10 rounded-[3rem] flex flex-col overflow-hidden border-white/5">
+                        <div class="flex justify-between items-center mb-10">
+                            <h3 class="text-xs font-black text-indigo-400 uppercase italic tracking-widest">Recent Node Logs</h3>
+                            <input type="text" id="adminSearch" placeholder="SEARCH MAC..." class="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black text-white outline-none focus:border-indigo-500">
+                        </div>
+                        <div id="orderList" class="space-y-4 overflow-y-auto pr-4 flex-grow custom-scroll"></div>
+                    </div>
+
+                    <div class="glass p-10 rounded-[3rem] flex flex-col overflow-hidden border-red-500/20 bg-red-500/5">
+                        <h3 class="text-xs font-black text-red-500 uppercase mb-10 italic tracking-widest">Security Blacklist</h3>
+                        <div id="bannedList" class="space-y-4 overflow-y-auto pr-4 flex-grow custom-scroll"></div>
+                        <div class="mt-8 pt-8 border-t border-red-500/10">
+                            <input type="text" id="manualBan" placeholder="MANUAL MAC BAN..." class="w-full bg-black/40 border border-red-500/20 rounded-2xl p-4 text-[10px] font-mono mb-4 text-white uppercase">
+                            <button onclick="banFromInput()" class="w-full py-4 bg-red-600 rounded-2xl font-black uppercase text-[9px] tracking-widest hover:bg-red-700 transition">Add to Blacklist</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. FIREBASE & CORE CONFIG ---
+        const firebaseConfig = { 
+            databaseURL: "https://db--merkez-default-rtdb.europe-west1.firebasedatabase.app/" 
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const SECURITY_KEY = "1234"; // Ändere dies für dein Admin Panel!
+
+        // --- 2. SECURITY ENGINE ---
+        async function checkSecurityStatus() {
+            const userMac = localStorage.getItem('v1_mac');
+            if (userMac) {
+                const safeMac = userMac.replace(/:/g, '-');
+                const snap = await db.ref('blacklist/' + safeMac).once('value');
+                if (snap.exists() || localStorage.getItem('v1_banned') === 'true') {
+                    activateBannScreen(userMac);
+                }
+            }
+        }
+
+        function activateBannScreen(mac) {
+            localStorage.setItem('v1_banned', 'true');
+            document.getElementById('banned-id-display').innerText = mac || "HIDDEN";
+            document.getElementById('banned-screen').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            // Disable all interactions
+            window.stop();
+        }
+
+        checkSecurityStatus();
+
+        // --- 3. UI CONTROLLER ---
+        AOS.init({ duration: 1200, once: true });
+
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            sb.classList.toggle('translate-x-full');
+            document.body.style.overflow = sb.classList.contains('translate-x-full') ? 'auto' : 'hidden';
+        }
+
+        function openModal(p) {
+            document.getElementById('planDisplay').innerText = p;
+            document.getElementById('orderModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('orderModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openAdmin() { document.getElementById('adminModal').classList.remove('hidden'); }
+        function closeAdmin() { document.getElementById('adminModal').classList.add('hidden'); }
+
+        // --- 4. DATA HANDLING ---
+        document.getElementById('macInput').addEventListener('input', e => {
+            let v = e.target.value.toUpperCase().replace(/[^0-9A-Z]/g, '');
+            let f = "";
+            for(let i=0; i<v.length && i<12; i++) {
+                if(i>0 && i%2===0) f += ":";
+                f += v[i];
+            }
+            e.target.value = f;
+        });
+
+        document.getElementById('orderForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const txt = document.getElementById('btnText');
+            const mac = document.getElementById('macInput').value;
+            const alias = document.getElementById('aliasInput').value;
+            const plan = document.getElementById('planDisplay').innerText;
+
+            if(mac.length < 17) return alert("Ungültige MAC-Adresse");
+
+            btn.disabled = true;
+            txt.innerText = "CHECKING NODE SEC...";
+
+            // Check if mac is blacklisted before sending
+            const safeMac = mac.replace(/:/g, '-');
+            const banCheck = await db.ref('blacklist/' + safeMac).once('value');
+            if(banCheck.exists()) {
+                activateBannScreen(mac);
                 return;
             }
 
-            // B. Check existing orders (Upgrade Check)
-            const snapshot = await db.ref('bestellungen').orderByChild('mac_adresse').equalTo(mac).once('value');
-            let orderType = snapshot.exists() ? "UPGRADE" : "NEU";
+            txt.innerText = "ESTABLISHING SYNC...";
+            
+            try {
+                await db.ref('bestellungen').push({
+                    alias: alias,
+                    mac_adresse: mac,
+                    paket: plan,
+                    zeitstempel: new Date().toLocaleString('de-DE'),
+                    browser: navigator.userAgent,
+                    resolution: `${window.screen.width}x${window.screen.height}`
+                });
 
-            txt.innerText = "UPLOADING DATA...";
+                // Store MAC locally for security checks
+                localStorage.setItem('v1_mac', mac);
 
-            // C. Push Data
-            await db.ref('bestellungen').push({
-                paket: selectedPlan,
-                alias: alias,
-                mac_adresse: mac,
-                device_key: document.getElementById('keyInput').value || "N/A",
-                zeitstempel: new Date().toLocaleString('de-DE'),
-                system_status: orderType,
-                browser: navigator.userAgent
-            });
-
-            txt.innerText = "SYNC COMPLETE!";
-            msg.innerText = "ÖFFNE SUPPORT GATEWAY...";
-            msg.className = "text-emerald-500 text-[10px] font-black uppercase mt-3 text-center italic block";
-
-            setTimeout(() => {
-                window.open("https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ", "_blank");
-                closeModal();
+                txt.innerText = "SYNC COMPLETE!";
+                setTimeout(() => {
+                    window.open("https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ", "_blank");
+                    closeModal();
+                    btn.disabled = false;
+                    txt.innerText = "Initialisiere Sync";
+                }, 1500);
+            } catch(err) {
+                alert("Database Sync Error.");
                 btn.disabled = false;
-                txt.innerText = "Daten Senden & Sync";
-                document.getElementById('orderForm').reset();
-            }, 1800);
-
-        } catch (error) {
-            console.error(error);
-            alert("Fehler bei Synchronisation.");
-            btn.disabled = false;
-            txt.innerText = "RETRY SYNC";
-        }
-    });
-
-    // 6. PARTICLE ENGINE
-    (function() {
-        const canvas = document.getElementById('particles');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        class P {
-            constructor() { this.reset(); }
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.4;
-                this.vy = -(Math.random() * 0.5 + 0.2);
-                this.size = Math.random() * 1.5 + 0.5;
-                this.alpha = Math.random() * 0.5 + 0.1;
+                txt.innerText = "Retry Sync";
             }
-            update() {
-                this.x += this.vx; this.y += this.vy;
-                if (this.y < -10) this.reset();
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(99, 102, 241, ${this.alpha})`;
-                ctx.fill();
-            }
-        }
-        function init() {
-            resize();
-            for (let i = 0; i < 80; i++) particles.push(new P());
-        }
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animate);
-        }
-        window.addEventListener('resize', resize);
-        init(); animate();
-    })();
-</script>
-<div class="fixed bottom-4 right-4 z-[9999] opacity-10 hover:opacity-100 transition">
-    <button onclick="openAdmin()" class="w-8 h-8 bg-slate-800 rounded-full flex items-center justify-center text-[10px] border border-white/10">
-        <i class="fas fa-lock"></i>
-    </button>
-</div>
-
-<div id="adminModal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center bg-black p-6 backdrop-blur-3xl">
-    <div class="glass-heavy w-full max-w-4xl p-10 rounded-[3rem] max-h-[90vh] overflow-hidden flex flex-col border border-indigo-500/30">
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-2xl font-black italic uppercase tracking-tighter">Admin <span class="text-indigo-500">Control</span></h2>
-            <button onclick="closeAdmin()" class="text-2xl">✕</button>
-        </div>
-
-        <div id="adminLogin" class="text-center py-20">
-            <input type="password" id="adminPass" placeholder="ADMIN PASSWORT" class="p-6 bg-white/5 border border-white/10 rounded-2xl text-center mb-6 block mx-auto outline-none focus:border-indigo-500 tracking-[0.5em]">
-            <button onclick="verifyAdmin()" class="px-10 py-4 bg-indigo-600 rounded-2xl font-black uppercase text-[10px]">Login</button>
-        </div>
-
-        <div id="adminDashboard" class="hidden flex-grow overflow-y-auto">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="glass p-6 rounded-3xl border-white/5">
-                    <h3 class="text-xs font-black uppercase mb-6 text-indigo-400 italic">Letzte Bestellungen</h3>
-                    <div id="orderList" class="space-y-4 text-[10px]">
-                        </div>
-                </div>
-                <div class="glass p-6 rounded-3xl border-white/5">
-                    <h3 class="text-xs font-black uppercase mb-6 text-red-500 italic">Blacklist (Banned)</h3>
-                    <div id="bannedList" class="space-y-4 text-[10px]">
-                        </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Konfiguration (Ändere dein Passwort hier!)
-    const ADMIN_SECRET = "Admin23"; 
-
-    function openAdmin() { document.getElementById('adminModal').classList.remove('hidden'); }
-    function closeAdmin() { document.getElementById('adminModal').classList.add('hidden'); }
-
-    function verifyAdmin() {
-        if(document.getElementById('adminPass').value === ADMIN_SECRET) {
-            document.getElementById('adminLogin').classList.add('hidden');
-            document.getElementById('adminDashboard').classList.remove('hidden');
-            loadAdminData();
-        } else {
-            alert("Falsches Passwort!");
-        }
-    }
-
-    async function loadAdminData() {
-        // Bestellungen laden
-        db.ref('bestellungen').limitToLast(20).on('value', snap => {
-            const list = document.getElementById('orderList');
-            list.innerHTML = "";
-            snap.forEach(child => {
-                const data = child.val();
-                list.innerHTML += `
-                    <div class="p-4 bg-white/5 rounded-xl flex justify-between items-center border border-white/5">
-                        <div>
-                            <p class="font-black text-white">${data.alias || 'Gast'}</p>
-                            <p class="text-slate-500">${data.mac_adresse}</p>
-                            <p class="text-[8px] text-indigo-400">${data.paket}</p>
-                        </div>
-                        <button onclick="banMac('${data.mac_adresse}')" class="px-3 py-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition">BAN</button>
-                    </div>
-                `;
-            });
         });
 
-        // Blacklist laden
-        db.ref('blacklist').on('value', snap => {
-            const list = document.getElementById('bannedList');
-            list.innerHTML = "";
-            snap.forEach(child => {
-                list.innerHTML += `
-                    <div class="p-4 bg-red-500/5 rounded-xl flex justify-between items-center border border-red-500/10">
-                        <p class="font-mono">${child.key.replace(/-/g, ':')}</p>
-                        <button onclick="unbanMac('${child.key}')" class="text-slate-500 hover:text-white">Entbannen</button>
-                    </div>
-                `;
+        // --- 5. ADMIN TERMINAL LOGIC ---
+        function verifyAdmin() {
+            const pass = document.getElementById('adminPass').value;
+            if(pass === SECURITY_KEY) {
+                document.getElementById('adminLogin').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                startAdminSync();
+            } else {
+                alert("ACCESS DENIED: WRONG SECURITY KEY");
+            }
+        }
+
+        function startAdminSync() {
+            // Stats & Live Orders
+            db.ref('bestellungen').on('value', snap => {
+                const list = document.getElementById('orderList');
+                let totalSyncs = 0;
+                let revenue = 0;
+                list.innerHTML = "";
+
+                snap.forEach(child => {
+                    const d = child.val();
+                    totalSyncs++;
+                    
+                    // Simple Revenue Calculation
+                    if(d.paket.includes('40')) revenue += 40;
+                    if(d.paket.includes('120')) revenue += 120;
+                    if(d.paket.includes('200')) revenue += 200;
+
+                    list.innerHTML = `
+                        <div class="p-6 bg-white/5 rounded-[2rem] border border-white/5 flex justify-between items-center group hover:border-indigo-500/40 transition">
+                            <div class="text-[10px] uppercase font-black">
+                                <p class="text-indigo-400 mb-1">${d.alias || 'Guest'}</p>
+                                <p class="text-white font-mono tracking-wider">${d.mac_adresse}</p>
+                                <p class="text-slate-600 text-[8px] mt-2">${d.zeitstempel} • ${d.paket}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="banNode('${d.mac_adresse}')" class="px-4 py-2 bg-red-600/10 text-red-500 rounded-xl text-[9px] font-black hover:bg-red-600 hover:text-white transition">BAN</button>
+                            </div>
+                        </div>` + list.innerHTML;
+                });
+
+                document.getElementById('stat-total').innerText = totalSyncs;
+                document.getElementById('stat-revenue').innerText = revenue + " €";
+            });
+
+            // Blacklist Sync
+            db.ref('blacklist').on('value', snap => {
+                const list = document.getElementById('bannedList');
+                let bannedCount = 0;
+                list.innerHTML = "";
+                snap.forEach(child => {
+                    bannedCount++;
+                    list.innerHTML += `
+                        <div class="p-4 bg-red-500/10 rounded-2xl flex justify-between items-center border border-red-500/20">
+                            <p class="text-[10px] font-mono font-black text-white tracking-widest">${child.key.replace(/-/g, ':')}</p>
+                            <button onclick="unbanNode('${child.key}')" class="text-[9px] text-slate-500 uppercase font-black hover:text-white">Unban</button>
+                        </div>`;
+                });
+                document.getElementById('stat-banned').innerText = bannedCount;
+            });
+        }
+
+        function banNode(mac) {
+            if(confirm("Hardware " + mac + " permanent sperren?")) {
+                db.ref('blacklist/' + mac.replace(/:/g, '-')).set({ banned_at: new Date().toISOString() });
+            }
+        }
+
+        function banFromInput() {
+            const mac = document.getElementById('manualBan').value;
+            if(mac.length === 17) banNode(mac); else alert("Ungültige MAC");
+        }
+
+        function unbanNode(key) {
+            if(confirm("Bann für " + key + " aufheben?")) {
+                db.ref('blacklist/' + key).remove();
+            }
+        }
+
+        // --- 6. PARTICLE PHYSICS ENGINE ---
+        (function() {
+            const canvas = document.getElementById('particles'), ctx = canvas.getContext('2d');
+            let ps = [];
+            function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+            window.addEventListener('resize', resize); resize();
+
+            for(let i=0; i<100; i++) {
+                ps.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2 + 0.5,
+                    vx: (Math.random() - 0.5) * 0.3,
+                    vy: -(Math.random() * 0.5 + 0.2),
+                    alpha: Math.random() * 0.5 + 0.1
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ps.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    if(p.y < 0) { p.y = canvas.height; p.x = Math.random() * canvas.width; }
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(99, 102, 241, ${p.alpha})`;
+                    ctx.fill();
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+
+        // Admin Search Filter
+        document.getElementById('adminSearch').addEventListener('input', function(e) {
+            const term = e.target.value.toUpperCase();
+            document.querySelectorAll('#orderList > div').forEach(card => {
+                const mac = card.querySelector('p.font-mono').innerText;
+                card.style.display = mac.includes(term) ? 'flex' : 'none';
             });
         });
-    }
-
-    function banMac(mac) {
-        if(confirm("MAC " + mac + " wirklich bannen?")) {
-            const safeMac = mac.replace(/:/g, '-');
-            db.ref('blacklist/' + safeMac).set(true);
-        }
-    }
-
-    function unbanMac(safeMac) {
-        if(confirm("Bann aufheben?")) {
-            db.ref('blacklist/' + safeMac).remove();
-        }
-    }
-</script>
-
-  
+    </script>
 </body>
 </html>
