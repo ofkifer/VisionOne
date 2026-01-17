@@ -641,6 +641,107 @@
         init(); animate();
     })();
 </script>
+<div class="fixed bottom-4 right-4 z-[9999] opacity-10 hover:opacity-100 transition">
+    <button onclick="openAdmin()" class="w-8 h-8 bg-slate-800 rounded-full flex items-center justify-center text-[10px] border border-white/10">
+        <i class="fas fa-lock"></i>
+    </button>
+</div>
 
+<div id="adminModal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center bg-black p-6 backdrop-blur-3xl">
+    <div class="glass-heavy w-full max-w-4xl p-10 rounded-[3rem] max-h-[90vh] overflow-hidden flex flex-col border border-indigo-500/30">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-black italic uppercase tracking-tighter">Admin <span class="text-indigo-500">Control</span></h2>
+            <button onclick="closeAdmin()" class="text-2xl">✕</button>
+        </div>
+
+        <div id="adminLogin" class="text-center py-20">
+            <input type="password" id="adminPass" placeholder="ADMIN PASSWORT" class="p-6 bg-white/5 border border-white/10 rounded-2xl text-center mb-6 block mx-auto outline-none focus:border-indigo-500 tracking-[0.5em]">
+            <button onclick="verifyAdmin()" class="px-10 py-4 bg-indigo-600 rounded-2xl font-black uppercase text-[10px]">Login</button>
+        </div>
+
+        <div id="adminDashboard" class="hidden flex-grow overflow-y-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass p-6 rounded-3xl border-white/5">
+                    <h3 class="text-xs font-black uppercase mb-6 text-indigo-400 italic">Letzte Bestellungen</h3>
+                    <div id="orderList" class="space-y-4 text-[10px]">
+                        </div>
+                </div>
+                <div class="glass p-6 rounded-3xl border-white/5">
+                    <h3 class="text-xs font-black uppercase mb-6 text-red-500 italic">Blacklist (Banned)</h3>
+                    <div id="bannedList" class="space-y-4 text-[10px]">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Konfiguration (Ändere dein Passwort hier!)
+    const ADMIN_SECRET = "Admin23"; 
+
+    function openAdmin() { document.getElementById('adminModal').classList.remove('hidden'); }
+    function closeAdmin() { document.getElementById('adminModal').classList.add('hidden'); }
+
+    function verifyAdmin() {
+        if(document.getElementById('adminPass').value === ADMIN_SECRET) {
+            document.getElementById('adminLogin').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            loadAdminData();
+        } else {
+            alert("Falsches Passwort!");
+        }
+    }
+
+    async function loadAdminData() {
+        // Bestellungen laden
+        db.ref('bestellungen').limitToLast(20).on('value', snap => {
+            const list = document.getElementById('orderList');
+            list.innerHTML = "";
+            snap.forEach(child => {
+                const data = child.val();
+                list.innerHTML += `
+                    <div class="p-4 bg-white/5 rounded-xl flex justify-between items-center border border-white/5">
+                        <div>
+                            <p class="font-black text-white">${data.alias || 'Gast'}</p>
+                            <p class="text-slate-500">${data.mac_adresse}</p>
+                            <p class="text-[8px] text-indigo-400">${data.paket}</p>
+                        </div>
+                        <button onclick="banMac('${data.mac_adresse}')" class="px-3 py-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition">BAN</button>
+                    </div>
+                `;
+            });
+        });
+
+        // Blacklist laden
+        db.ref('blacklist').on('value', snap => {
+            const list = document.getElementById('bannedList');
+            list.innerHTML = "";
+            snap.forEach(child => {
+                list.innerHTML += `
+                    <div class="p-4 bg-red-500/5 rounded-xl flex justify-between items-center border border-red-500/10">
+                        <p class="font-mono">${child.key.replace(/-/g, ':')}</p>
+                        <button onclick="unbanMac('${child.key}')" class="text-slate-500 hover:text-white">Entbannen</button>
+                    </div>
+                `;
+            });
+        });
+    }
+
+    function banMac(mac) {
+        if(confirm("MAC " + mac + " wirklich bannen?")) {
+            const safeMac = mac.replace(/:/g, '-');
+            db.ref('blacklist/' + safeMac).set(true);
+        }
+    }
+
+    function unbanMac(safeMac) {
+        if(confirm("Bann aufheben?")) {
+            db.ref('blacklist/' + safeMac).remove();
+        }
+    }
+</script>
+
+  
 </body>
 </html>
