@@ -421,6 +421,15 @@
                     Unser System erkennt Ihre MAC-Adresse automatisch und addiert die neue Laufzeit.
                 </p>
             </details>
+            <details class="glass p-8 rounded-3xl group cursor-pointer">
+                <summary class="list-none flex justify-between items-center text-sm font-black uppercase">
+                    Gibt es eine Geld-zurück-Garantie?
+                    <i class="fas fa-plus text-indigo-500 transition-transform"></i>
+                </summary>
+                <p class="mt-6 text-sm text-slate-400 leading-relaxed">
+                    Aufgrund der sofortigen Bereitstellung ist eine Erstattung ausgeschlossen. Wir bieten jedoch Support.
+                </p>
+            </details>
         </div>
     </div>
 </section>
@@ -465,7 +474,7 @@
         const plan = document.getElementById('selectedPlan').innerText;
         const btn = document.getElementById('submitBtn');
 
-        if (mac.length < 10) {
+        if (mac.length < 8) {
             document.getElementById('modalContent').classList.add('shake');
             setTimeout(() => document.getElementById('modalContent').classList.remove('shake'), 500);
             return;
@@ -478,17 +487,24 @@
         try {
             await fetch(url, {
                 method: 'POST',
-                body: JSON.stringify({ mac: mac, plan: plan, time: new Date().toLocaleString('de-DE') })
+                body: JSON.stringify({ 
+                    mac: mac, 
+                    plan: plan, 
+                    time: new Date().toLocaleString('de-DE'),
+                    agent: navigator.userAgent
+                })
             });
             btn.innerText = "Erfolgreich!";
-            setTimeout(() => window.location.href = "https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ", 1000);
+            setTimeout(() => {
+                window.location.href = "https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ";
+            }, 1000);
         } catch (e) {
-            alert("Fehler!");
+            alert("Verbindungsfehler. Bitte versuchen Sie es erneut.");
             btn.disabled = false;
+            btn.innerText = "Jetzt Sichern";
         }
     }
 
-    // Partikel Hintergrund (Deine CSS Partikel Logik)
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
     let pts = [];
