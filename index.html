@@ -11,9 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
   <style>
     :root { --primary: #6366f1; --bg: #020617; }
     * { box-sizing: border-box; }
@@ -445,30 +442,46 @@
 <div id="orderModal" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/95 p-6 backdrop-blur-xl">
     <div id="modalContent" class="glass-heavy w-full max-w-lg p-10 md:p-12 rounded-3xl relative border border-white/10">
         <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-500 hover:text-white transition text-2xl">✕</button>
-        <h2 class="text-2xl md:text-3xl font-black uppercase italic mb-2">Order <span class="text-indigo-500">Sync</span></h2>
-        <p id="selectedPlan" class="text-xs font-black text-slate-500 uppercase tracking-widest mb-8"></p>
+        
+        <h2 class="text-2xl md:text-3xl font-black uppercase italic mb-2">Order <span class="text-indigo-500">Process</span></h2>
+        <p id="selectedPlan" class="text-[10px] font-black text-slate-500 uppercase tracking-[3px] mb-8"></p>
+        
         <div class="space-y-6">
             <div>
-                <label class="block text-[10px] font-black uppercase text-indigo-400 mb-3 tracking-widest">MAC-Adresse</label>
-                <input type="text" id="macInput" placeholder="00:00:00:00:00:00" class="w-full bg-black/50 border border-white/10 rounded-2xl py-5 px-6 text-white mac-input focus:border-indigo-500 outline-none transition">
+                <input type="text" id="macInput" placeholder="DEINE MAC ADRESSE" 
+                       class="w-full bg-black/40 border border-white/10 rounded-2xl py-6 px-6 text-white text-center font-mono tracking-widest focus:border-indigo-500 outline-none">
             </div>
-            <button onclick="processOrder()" id="submitBtn" class="w-full btn-primary py-6 rounded-2xl font-black uppercase text-xs tracking-widest transition">Jetzt Sichern</button>
+            
+            <button onclick="processOrder()" id="submitBtn" class="w-full btn-primary py-6 rounded-2xl font-black uppercase text-xs tracking-widest transition-all">
+                Bestätigen & Synchronisieren
+            </button>
+            
+            <button onclick="closeModal()" class="w-full text-[10px] font-black text-slate-500 uppercase tracking-widest hover:text-white transition">Abbrechen</button>
         </div>
     </div>
 </div>
 
 <script>
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('translate-x-full'); }
-    function openModal(plan) {
-        document.getElementById('selectedPlan').innerText = plan;
-        document.getElementById('orderModal').classList.remove('hidden');
-        document.getElementById('orderModal').classList.add('flex');
-    }
-    function closeModal() {
-        document.getElementById('orderModal').classList.add('hidden');
-        document.getElementById('orderModal').classList.remove('flex');
+    // 1. Sidebar Logik
+    function toggleSidebar() { 
+        document.getElementById('sidebar').classList.toggle('translate-x-full'); 
     }
 
+    // 2. Modal Logik (Öffnen/Schließen)
+    function openModal(plan) {
+        document.getElementById('selectedPlan').innerText = plan;
+        const modal = document.getElementById('orderModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('orderModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    // 3. Hintergrund-Logik für Firebase
     async function processOrder() {
         const mac = document.getElementById('macInput').value.trim();
         const plan = document.getElementById('selectedPlan').innerText;
@@ -481,44 +494,52 @@
         }
 
         btn.disabled = true;
-        btn.innerText = "Synchronisiere...";
+        btn.innerText = "CONNECTING...";
 
-        const url = "https://db--merkez-default-rtdb.europe-west1.firebasedatabase.app/orders.json";
         try {
-            await fetch(url, {
+            // Sendet die Daten direkt an deine Merkez Datenbank
+            await fetch("https://db--merkez-default-rtdb.europe-west1.firebasedatabase.app/orders.json", {
                 method: 'POST',
                 body: JSON.stringify({ 
                     mac: mac, 
                     plan: plan, 
-                    time: new Date().toLocaleString('de-DE'),
-                    agent: navigator.userAgent
+                    timestamp: new Date().toLocaleString('de-DE'),
+                    platform: "Web-Order"
                 })
             });
-            btn.innerText = "Erfolgreich!";
+
+            btn.innerText = "SUCCESS!";
+            btn.style.background = "#10b981"; 
+
             setTimeout(() => {
                 window.location.href = "https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ";
-            }, 1000);
+            }, 800);
+
         } catch (e) {
-            alert("Verbindungsfehler. Bitte versuchen Sie es erneut.");
+            alert("Error in Sync. Please try again.");
             btn.disabled = false;
-            btn.innerText = "Jetzt Sichern";
+            btn.innerText = "Bestätigen & Synchronisieren";
         }
     }
 
+    // 4. Partikel-Animation (Hintergrund)
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
     let pts = [];
-    function init() {
+    function initParticles() {
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        pts = []; for(let i=0; i<60; i++) pts.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*0.5});
+        pts = []; for(let i=0; i<60; i++) pts.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*0.4});
     }
-    function draw() {
-        ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle="rgba(99,102,241,0.3)";
+    function drawParticles() {
+        ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle="rgba(99,102,241,0.2)";
         pts.forEach(p => { p.y -= p.s; if(p.y<0) p.y=canvas.height; ctx.beginPath(); ctx.arc(p.x,p.y,1,0,Math.PI*2); ctx.fill(); });
-        requestAnimationFrame(draw);
+        requestAnimationFrame(drawParticles);
     }
-    window.addEventListener('resize', init); init(); draw();
+    window.addEventListener('resize', initParticles); initParticles(); drawParticles();
+
+    // 5. Init AOS
     AOS.init({ duration: 1000, once: true });
 </script>
+
 </body>
 </html>
