@@ -11,6 +11,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
   <style>
     :root { --primary: #6366f1; --bg: #020617; }
     * { box-sizing: border-box; }
@@ -283,6 +286,7 @@
             <ul class="text-xs text-slate-400 space-y-4 mb-12 flex-grow">
                 <li><i class="fas fa-check text-indigo-500 mr-2"></i>Standard Node Access</li>
                 <li><i class="fas fa-check text-indigo-500 mr-2"></i>MAC-Routing</li>
+                <li><i class="fas fa-times text-red-500 mr-2 opacity-40"></i>Kein VIP Support</li>
             </ul>
             <button onclick="openModal('1 Monat - 40€')" class="w-full py-5 rounded-2xl bg-white/5 border border-white/10 font-black text-xs uppercase hover:bg-white/10 transition">Wählen</button>
         </div>
@@ -293,6 +297,7 @@
             <p class="text-xs font-black text-emerald-400 uppercase mb-10 pb-6 border-b border-white/5">6 Monate Service</p>
             <ul class="text-xs text-slate-400 space-y-4 mb-12 flex-grow">
                 <li><i class="fas fa-check text-emerald-500 mr-2"></i>Enhanced Bandwidth</li>
+                <li><i class="fas fa-check text-emerald-500 mr-2"></i>Prio Aktivierung</li>
                 <li><i class="fas fa-check text-emerald-500 mr-2"></i>6 Monate Laufzeit</li>
             </ul>
             <button onclick="openModal('6 Monate - 80€')" class="w-full py-5 rounded-2xl bg-white/5 border border-white/10 font-black text-xs uppercase hover:bg-white/10 transition">Wählen</button>
@@ -306,6 +311,7 @@
             <ul class="text-xs font-black text-white space-y-5 mb-12 flex-grow">
                 <li><i class="fas fa-crown mr-2 text-amber-300"></i>Premium VIP Routing</li>
                 <li><i class="fas fa-bolt mr-2"></i>Maximum Speed</li>
+                <li><i class="fas fa-headset mr-2"></i>Express Support</li>
             </ul>
             <button onclick="openModal('12 Monate - 120€')" class="w-full py-6 rounded-2xl bg-white text-black font-black text-xs uppercase shadow-2xl hover:scale-105 transition">Jetzt Sichern</button>
         </div>
@@ -314,7 +320,24 @@
             <span class="text-[10px] font-black text-cyan-400 uppercase mb-8">Ultimate Diamond</span>
             <div class="text-6xl font-black mb-4 italic text-cyan-400">200 €</div>
             <p class="text-xs font-black text-cyan-400 uppercase mb-10 pb-6 border-b border-white/5">Dedicated 4K Lines</p>
+            <ul class="text-xs text-slate-400 space-y-4 mb-12 flex-grow">
+                <li><i class="fas fa-gem text-cyan-400 mr-2"></i>Dedicated Resources</li>
+                <li><i class="fas fa-check text-cyan-400 mr-2"></i>Highest Bitrate</li>
+                <li><i class="fas fa-check text-cyan-400 mr-2"></i>Multi-Device</li>
+            </ul>
             <button onclick="openModal('Diamond - 200€')" class="w-full py-5 rounded-2xl bg-cyan-500/10 border border-cyan-500/40 font-black text-xs uppercase text-cyan-400 hover:bg-cyan-500/20 transition">Wählen</button>
+        </div>
+
+        <div class="price-card glass p-8 md:p-10 rounded-3xl flex flex-col border-2 border-amber-500/20">
+            <span class="text-[10px] font-black text-amber-500 uppercase mb-8">World Black VIP</span>
+            <div class="text-6xl font-black mb-4 italic text-amber-500">300 €</div>
+            <p class="text-xs font-black text-amber-500/60 uppercase mb-10 pb-6 border-b border-white/5">Concierge Infrastructure</p>
+            <ul class="text-xs text-slate-400 space-y-4 mb-12 flex-grow">
+                <li><i class="fas fa-star text-amber-500 mr-2"></i>Unrestricted Bandwidth</li>
+                <li><i class="fas fa-star text-amber-500 mr-2"></i>Private Server</li>
+                <li><i class="fas fa-star text-amber-500 mr-2"></i>Personal Manager</li>
+            </ul>
+            <button onclick="openModal('World Black VIP - 300€')" class="w-full py-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 font-black text-xs uppercase text-amber-500 hover:bg-amber-500/20 transition">VIP Order</button>
         </div>
     </div>
 </section>
@@ -324,7 +347,6 @@
         <h2 class="text-center text-4xl md:text-6xl font-black uppercase italic mb-20">
           SYSTEM <span class="text-indigo-400">INTEGRATION</span>
         </h2>
-        
         <div class="space-y-12">
             <div class="glass p-10 rounded-3xl">
                 <div class="flex items-start gap-4">
@@ -333,7 +355,7 @@
                         <h4 class="text-xl font-black uppercase mb-4">Dev-Status Freischalten</h4>
                         <p class="text-sm text-slate-400 leading-relaxed">
                             Navigieren Sie zu <span class="text-white">Einstellungen → Mein Fire TV → Info</span>. 
-                            Drücken Sie die Auswahltaste <b class="text-indigo-400">7 Mal</b>.
+                            Drücken Sie die Auswahltaste <b class="text-indigo-400">7 Mal</b> auf den Gerätenamen.
                         </p>
                     </div>
                 </div>
@@ -343,15 +365,29 @@
                 <div class="flex items-start gap-4">
                     <div class="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center font-black text-xl border border-white/10 flex-shrink-0">2</div>
                     <div class="flex-grow">
-                        <h4 class="text-xl font-black uppercase mb-4">App Deployment</h4>
-                        <div class="grid md:grid-cols-2 gap-6 mt-4">
+                        <h4 class="text-xl font-black uppercase mb-4">Unbekannte Quellen</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            Aktivieren Sie <b class="text-emerald-400">„Apps unbekannter Herkunft"</b> in den Entwickleroptionen.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass p-10 rounded-3xl">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center font-black text-xl flex-shrink-0">3</div>
+                    <div class="flex-grow">
+                        <h4 class="text-xl font-black uppercase mb-6">App Deployment</h4>
+                        <div class="grid md:grid-cols-2 gap-6">
                             <div class="bg-black/40 p-8 rounded-2xl border border-white/5 text-center">
                                 <span class="text-[9px] font-black text-slate-500 block mb-3 uppercase">IBO PLAYER PRO</span>
                                 <div class="text-4xl font-black italic text-indigo-400 mb-3">327187</div>
+                                <div class="text-[9px] text-slate-600 uppercase">Downloader Code</div>
                             </div>
                             <div class="bg-black/40 p-8 rounded-2xl border border-white/5 text-center">
                                 <span class="text-[9px] font-black text-slate-500 block mb-3 uppercase">VU PLAYER PRO</span>
                                 <div class="text-4xl font-black italic text-indigo-400 mb-3">7718585</div>
+                                <div class="text-[9px] text-slate-600 uppercase">Downloader Code</div>
                             </div>
                         </div>
                     </div>
@@ -372,7 +408,18 @@
                     Was genau kaufe ich hier?
                     <i class="fas fa-plus text-indigo-500 transition-transform"></i>
                 </summary>
-                <p class="mt-6 text-sm text-slate-400">Zugang zu unserer dedizierten Server-Infrastruktur via MAC-Routing.</p>
+                <p class="mt-6 text-sm text-slate-400 leading-relaxed">
+                    Sie erwerben den Zugang zu unserer dedizierten Server-Infrastruktur mit technischem Routing für Ihre MAC-Adresse.
+                </p>
+            </details>
+            <details class="glass p-8 rounded-3xl group cursor-pointer">
+                <summary class="list-none flex justify-between items-center text-sm font-black uppercase">
+                    Wie funktioniert das Upgrade?
+                    <i class="fas fa-plus text-indigo-500 transition-transform"></i>
+                </summary>
+                <p class="mt-6 text-sm text-slate-400 leading-relaxed">
+                    Unser System erkennt Ihre MAC-Adresse automatisch und addiert die neue Laufzeit.
+                </p>
             </details>
         </div>
     </div>
@@ -396,21 +443,23 @@
                 <label class="block text-[10px] font-black uppercase text-indigo-400 mb-3 tracking-widest">MAC-Adresse</label>
                 <input type="text" id="macInput" placeholder="00:00:00:00:00:00" class="w-full bg-black/50 border border-white/10 rounded-2xl py-5 px-6 text-white mac-input focus:border-indigo-500 outline-none transition">
             </div>
-            <button onclick="processOrder()" id="submitBtn" class="w-full btn-primary py-6 rounded-2xl font-black uppercase text-xs tracking-widest transition">Bestätigen</button>
+            <button onclick="processOrder()" id="submitBtn" class="w-full btn-primary py-6 rounded-2xl font-black uppercase text-xs tracking-widest transition">Jetzt Sichern</button>
         </div>
     </div>
 </div>
 
 <script>
-    // 1. UI LOGIK
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('translate-x-full'); }
-    function openModal(plan) { 
+    function openModal(plan) {
         document.getElementById('selectedPlan').innerText = plan;
-        document.getElementById('orderModal').classList.replace('hidden', 'flex'); 
+        document.getElementById('orderModal').classList.remove('hidden');
+        document.getElementById('orderModal').classList.add('flex');
     }
-    function closeModal() { document.getElementById('orderModal').classList.replace('flex', 'hidden'); }
+    function closeModal() {
+        document.getElementById('orderModal').classList.add('hidden');
+        document.getElementById('orderModal').classList.remove('flex');
+    }
 
-    // 2. FIREBASE REST API FUNKTION (Datenbank: db--merkez)
     async function processOrder() {
         const mac = document.getElementById('macInput').value.trim();
         const plan = document.getElementById('selectedPlan').innerText;
@@ -425,60 +474,35 @@
         btn.disabled = true;
         btn.innerText = "Synchronisiere...";
 
-        // Direktes Senden an deine Firebase URL
-        const firebaseURL = "https://db--merkez-default-rtdb.europe-west1.firebasedatabase.app/orders.json";
-        
+        const url = "https://db--merkez-default-rtdb.europe-west1.firebasedatabase.app/orders.json";
         try {
-            const response = await fetch(firebaseURL, {
+            await fetch(url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    mac: mac,
-                    paket: plan,
-                    datum: new Date().toLocaleString('de-DE'),
-                    status: 'neu'
-                })
+                body: JSON.stringify({ mac: mac, plan: plan, time: new Date().toLocaleString('de-DE') })
             });
-
-            if(response.ok) {
-                btn.innerText = "Erfolgreich!";
-                btn.style.background = "#10b981";
-                setTimeout(() => {
-                    window.location.href = "https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ";
-                }, 1000);
-            } else {
-                throw new Error();
-            }
+            btn.innerText = "Erfolgreich!";
+            setTimeout(() => window.location.href = "https://teams.live.com/l/community/FEAnh8L1jzMf2tJ9wQ", 1000);
         } catch (e) {
-            alert("Fehler bei der Übertragung. Bitte Support kontaktieren.");
+            alert("Fehler!");
             btn.disabled = false;
-            btn.innerText = "Erneut versuchen";
         }
     }
 
-    // 3. ANIMATIONEN & EFFEKTE
+    // Partikel Hintergrund (Deine CSS Partikel Logik)
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
     let pts = [];
     function init() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        pts = [];
-        for(let i=0; i<60; i++) pts.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*0.5 + 0.2});
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        pts = []; for(let i=0; i<60; i++) pts.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*0.5});
     }
-    function animate() {
-        ctx.clearRect(0,0,canvas.width, canvas.height);
-        ctx.fillStyle = "rgba(99,102,241,0.3)";
-        pts.forEach(p => {
-            p.y -= p.s; if(p.y < 0) p.y = canvas.height;
-            ctx.beginPath(); ctx.arc(p.x, p.y, 1.2, 0, Math.PI*2); ctx.fill();
-        });
-        requestAnimationFrame(animate);
+    function draw() {
+        ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle="rgba(99,102,241,0.3)";
+        pts.forEach(p => { p.y -= p.s; if(p.y<0) p.y=canvas.height; ctx.beginPath(); ctx.arc(p.x,p.y,1,0,Math.PI*2); ctx.fill(); });
+        requestAnimationFrame(draw);
     }
-    window.addEventListener('resize', init);
-    init(); animate();
+    window.addEventListener('resize', init); init(); draw();
     AOS.init({ duration: 1000, once: true });
 </script>
-
 </body>
 </html>
